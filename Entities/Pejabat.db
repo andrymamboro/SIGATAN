@@ -1,0 +1,46 @@
+{
+  "name": "Pejabat",
+  "type": "object",
+  "properties": {
+    "kecamatan": {
+      "type": "string",
+      "description": "Kecamatan"
+    },
+    "kelurahan": {
+      "type": "string",
+      "description": "Kelurahan"
+    },
+    "nama": {
+      "type": "string",
+      "description": "Nama pejabat"
+    },
+    "jabatan": {
+      "type": "string",
+      "enum": [
+        "PPATK Kecamatan",
+        "Lurah",
+        "Kasi Pemerintahan",
+        "Staf Administrasi Kecamatan"
+      ],
+      "description": "Jabatan"
+    },
+    "nip": {
+      "type": "string",
+      "description": "NIP pejabat"
+    },
+    "selaku": {
+      "type": "string",
+      "description": "Selaku/Sebagai"
+    },
+    "aktif": {
+      "type": "boolean",
+      "default": true,
+      "description": "Status aktif"
+    }
+  },
+  "required": [
+    "kecamatan",
+    "nama",
+    "jabatan"
+  ]
+}

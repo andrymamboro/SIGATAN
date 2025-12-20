@@ -1,0 +1,174 @@
+{
+  "name": "Tanah",
+  "type": "object",
+  "properties": {
+    "nama_pemilik": {
+      "type": "string",
+      "description": "Nama pemilik tanah"
+    },
+    "nik_pemilik": {
+      "type": "string",
+      "description": "NIK pemilik"
+    },
+    "umur_pemilik": {
+      "type": "number",
+      "description": "Umur pemilik"
+    },
+    "pekerjaan_pemilik": {
+      "type": "string",
+      "description": "Pekerjaan pemilik"
+    },
+    "alamat_pemilik": {
+      "type": "string",
+      "description": "Alamat pemilik"
+    },
+    "luas_perkalian": {
+      "type": "string",
+      "description": "Luas perkalian (P x L)"
+    },
+    "luas_terbilang": {
+      "type": "string",
+      "description": "Luas dalam kata-kata"
+    },
+    "luas_meter": {
+      "type": "number",
+      "description": "Luas dalam meter persegi"
+    },
+    "batas_utara": {
+      "type": "string",
+      "description": "Batas sebelah utara"
+    },
+    "batas_timur": {
+      "type": "string",
+      "description": "Batas sebelah timur"
+    },
+    "batas_selatan": {
+      "type": "string",
+      "description": "Batas sebelah selatan"
+    },
+    "batas_barat": {
+      "type": "string",
+      "description": "Batas sebelah barat"
+    },
+    "lokasi": {
+      "type": "string",
+      "description": "Lokasi tanah"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Koordinat latitude"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Koordinat longitude"
+    },
+    "location_type": {
+      "type": "string",
+      "enum": [
+        "marker",
+        "polygon"
+      ],
+      "default": "marker",
+      "description": "Tipe lokasi: marker atau polygon"
+    },
+    "polygon_coords": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      },
+      "description": "Koordinat polygon (array of [lat, lng])"
+    },
+    "asal_usul": {
+      "type": "string",
+      "description": "Asal usul tanah"
+    },
+    "nomor_skpt": {
+      "type": "string",
+      "description": "Nomor SKPT"
+    },
+    "tanggal_skpt": {
+      "type": "string",
+      "format": "date",
+      "description": "Tanggal SKPT"
+    },
+    "nama_penerima": {
+      "type": "string",
+      "description": "Nama penerima"
+    },
+    "nik_penerima": {
+      "type": "string",
+      "description": "NIK penerima"
+    },
+    "umur_penerima": {
+      "type": "number",
+      "description": "Umur penerima"
+    },
+    "pekerjaan_penerima": {
+      "type": "string",
+      "description": "Pekerjaan penerima"
+    },
+    "alamat_penerima": {
+      "type": "string",
+      "description": "Alamat penerima"
+    },
+    "atas_nama": {
+      "type": "string",
+      "description": "Atas nama"
+    },
+    "transaksi": {
+      "type": "string",
+      "enum": [
+        "Jual Beli",
+        "Hibah",
+        "Waris",
+        "Tukar Menukar",
+        "Lainnya"
+      ],
+      "description": "Jenis transaksi"
+    },
+    "harga": {
+      "type": "number",
+      "description": "Harga transaksi"
+    },
+    "harga_terbilang": {
+      "type": "string",
+      "description": "Harga dalam kata-kata"
+    },
+    "nomor_penyerahan": {
+      "type": "string",
+      "description": "Nomor surat penyerahan"
+    },
+    "tanggal_penyerahan": {
+      "type": "string",
+      "format": "date",
+      "description": "Tanggal penyerahan"
+    },
+    "kecamatan": {
+      "type": "string",
+      "description": "Kecamatan"
+    },
+    "kelurahan": {
+      "type": "string",
+      "description": "Kelurahan"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Proses",
+        "Selesai",
+        "Ditolak"
+      ],
+      "default": "Proses"
+    }
+  },
+  "required": [
+    "nama_pemilik",
+    "nik_pemilik",
+    "lokasi",
+    "kecamatan",
+    "kelurahan"
+  ]
+}
