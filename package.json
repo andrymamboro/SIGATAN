@@ -1,5 +1,6 @@
 {
   "name": "app-pertanahan",
+  "homepage": "https://github.com/andrymamboro/SIGATAN", 
   "version": "1.0.0",
   "description": "Aplikasi Manajemen Data Pertanahan",
   "type": "module",
@@ -8,6 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx,ts,tsx",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
@@ -48,3 +50,4 @@
     "vite": "^7.2.7"
   }
 }
+
