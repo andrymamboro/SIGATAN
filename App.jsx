@@ -5,19 +5,19 @@ import { Toaster } from 'sonner';
 import Layout from './Layout';
 
 // Pages
-import Dashboard from './Pages/Dashboard';
-import DataTanah from './Pages/DataTanah';
-import DetailTanah from './Pages/DetailTanah';
-import FormTanah from './Pages/FormTanah';
-import PetaTanah from './Pages/PetaTanah';
-import Pejabat from './Pages/Pejabat';
-import Laporan from './Pages/Laporan';
-import ManajemenUser from './Pages/ManajemenUser';
-import BackupRestore from './Pages/BackupRestore';
-import Login from './Pages/Login';
-import Test from './Pages/Test';
-import Wilayah from './Pages/Wilayah';
-import UserProfile from './Pages/UserProfile';
+const Dashboard = React.lazy(() => import('./Pages/Dashboard'));
+const DataTanah = React.lazy(() => import('./Pages/DataTanah'));
+const DetailTanah = React.lazy(() => import('./Pages/DetailTanah'));
+const FormTanah = React.lazy(() => import('./Pages/FormTanah'));
+const PetaTanah = React.lazy(() => import('./Pages/PetaTanah'));
+const Pejabat = React.lazy(() => import('./Pages/Pejabat'));
+const Laporan = React.lazy(() => import('./Pages/Laporan'));
+const ManajemenUser = React.lazy(() => import('./Pages/ManajemenUser'));
+const BackupRestore = React.lazy(() => import('./Pages/BackupRestore'));
+const Login = React.lazy(() => import('./Pages/Login'));
+const Test = React.lazy(() => import('./Pages/Test'));
+const Wilayah = React.lazy(() => import('./Pages/Wilayah'));
+const UserProfile = React.lazy(() => import('./Pages/UserProfile'));
 
 // Create query client
 const queryClient = new QueryClient({
@@ -35,6 +35,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Toaster position="top-right" richColors />
       <Router>
+        <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
         <Routes>
           {/* Test route */}
           <Route path="/test" element={<Test />} />
@@ -59,6 +60,7 @@ function App() {
           {/* 404 */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        </React.Suspense>
       </Router>
     </QueryClientProvider>
   );

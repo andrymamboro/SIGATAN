@@ -22,5 +22,15 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('leaflet')) return 'leaflet';
+          if (id.includes('jspdf')) return 'pdf';
+          if (id.includes('node_modules')) return 'vendor';
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Atur sesuai kebutuhan (dalam KB)
   },
 });
