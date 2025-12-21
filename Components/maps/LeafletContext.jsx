@@ -12,7 +12,7 @@ export function extendContext(source, extra) {
     ...extra
   });
 }
-export const LeafletContext = createContext(null);
+export const LeafletContext = createContext();
 export const LeafletProvider = LeafletContext.Provider;
 export function useLeafletContext() {
   const context = useContext(LeafletContext);
