@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { LeafletContext } from './LeafletContext';
 import { createPortal } from 'react-dom';
 import { MapContainer, TileLayer, Marker, Polygon, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -167,6 +168,8 @@ function DrawControl({ onPolygonComplete, polygonCoords, mode }) {
 }
 
 export default function MapPicker({ initialPosition = [-0.7861746, 119.8689641], initialPolygon = null, initialMode = 'marker', existingTanahData = [], onSelectLocation, onClose }) {
+  // Example value for context, you can expand as needed
+  const leafletContextValue = { initialPosition, initialPolygon, initialMode };
   const [position, setPosition] = useState(initialPosition);
   const [mapType, setMapType] = useState('satellite');
   const [loading, setLoading] = useState(false);
@@ -317,7 +320,8 @@ export default function MapPicker({ initialPosition = [-0.7861746, 119.8689641],
   }
 
   return (
-    <div className="space-y-4">
+    <LeafletContext.Provider value={leafletContextValue}>
+      <div className="space-y-4">
 
 
       {/* Map */}
@@ -526,5 +530,7 @@ export default function MapPicker({ initialPosition = [-0.7861746, 119.8689641],
       {/* Instructions */}
       
     </div>
+      </div>
+    </LeafletContext.Provider>
   );
 }

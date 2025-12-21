@@ -8,4 +8,4 @@ fetch('http://192.168.1.20:8000/auth/login', {
 })
   .then(response => response.json())
   .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));cek
+  .catch(error => console.error('Error:', error));

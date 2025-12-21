@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { LeafletContext, useLeaflet } from './LeafletContext';
 import { MapContainer, TileLayer, Marker, Polygon, Popup, useMap } from 'react-leaflet';
 import { Card } from '@/components/ui/card';
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,8 @@ function MapController({ center, zoom }) {
 }
 
 function TanahMap({ tanahList, center, zoom, selectedId, mapType = 'hybrid', showMarkers = true, showPolygons = true }) {
+  // Example consumer usage
+  const leafletCtx = useLeaflet ? useLeaflet() : {};
   const mapCenter = center || [0.7929194, 119.8875111];
   const mapZoom = zoom || 20;
   const processedTanahList = tanahList.map(tanah => {
@@ -54,17 +57,18 @@ function TanahMap({ tanahList, center, zoom, selectedId, mapType = 'hybrid', sho
     };
   }
   return (
-    <Card className="overflow-hidden rounded-xl shadow-lg">
-      <div className="relative">
-        <MapContainer
-          center={mapCenter}
-          zoom={mapZoom}
-          style={{ height: '500px', width: '100%' }}
-          className="z-0"
-        >
-          <MapController center={mapCenter} zoom={mapZoom} />
-          <TileLayer url={tileLayer.url} attribution={tileLayer.attribution} />
-          {processedTanahList.map((tanah) => {
+    <LeafletContext.Provider value={leafletCtx}>
+      <Card className="overflow-hidden rounded-xl shadow-lg">
+        <div className="relative">
+          <MapContainer
+            center={mapCenter}
+            zoom={mapZoom}
+            style={{ height: '500px', width: '100%' }}
+            className="z-0"
+          >
+            <MapController center={mapCenter} zoom={mapZoom} />
+            <TileLayer url={tileLayer.url} attribution={tileLayer.attribution} />
+            {processedTanahList.map((tanah) => {
             if (!tanah.latitude || !tanah.longitude) return null;
             const isSelected = selectedId && parseInt(tanah.id) === parseInt(selectedId);
             const { color, borderColor } = getPolygonColors(tanah.status, isSelected);
@@ -173,9 +177,10 @@ function TanahMap({ tanahList, center, zoom, selectedId, mapType = 'hybrid', sho
             }
             return elements.length > 0 ? elements : null;
           })}
-        </MapContainer>
-      </div>
-    </Card>
+          </MapContainer>
+        </div>
+      </Card>
+    </LeafletContext.Provider>
   );
 }
 
