@@ -12,8 +12,12 @@ export function extendContext(source, extra) {
     ...extra
   });re
 }
+<<<<<<< HEAD
 
 export const LeafletContext = createContext(null);
+=======
+export const LeafletContext = createContext();
+>>>>>>> 67d2381ddaac248dfbffffd79228a3814e186ae1
 export const LeafletProvider = LeafletContext.Provider;
 
 export function useLeafletContext() {
