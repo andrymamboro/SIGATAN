@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { LeafletContext, useLeaflet } from './LeafletContext';
+import { LeafletContext } from './LeafletContext';
 import { MapContainer, TileLayer, Marker, Polygon, Popup, useMap } from 'react-leaflet';
 import { Card } from '@/components/ui/card';
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,8 @@ function MapController({ center, zoom }) {
 }
 
 function TanahMap({ tanahList, center, zoom, selectedId, mapType = 'hybrid', showMarkers = true, showPolygons = true }) {
-  // Example consumer usage
-  const leafletCtx = useLeaflet ? useLeaflet() : {};
+  // Jika ingin menggunakan context, gunakan useLeafletContext dari LeafletContext.jsx
+  const leafletCtx = {};
   const mapCenter = center || [0.7929194, 119.8875111];
   const mapZoom = zoom || 20;
   const processedTanahList = tanahList.map(tanah => {
