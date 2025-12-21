@@ -321,7 +321,8 @@ export default function MapPicker({ initialPosition = [-0.7861746, 119.8689641],
 
   return (
     <LeafletContext.Provider value={leafletContextValue}>
-      <div className="space-y-4">
+      <>
+        <div className="space-y-4">
 
 
       {/* Map */}
@@ -525,12 +526,10 @@ export default function MapPicker({ initialPosition = [-0.7861746, 119.8689641],
           <MapPin className="w-4 h-4 mr-2" />
           Pilih Lokasi Ini
         </Button>
+        {/* Instructions */}
       </div>
-      <div></div>
-      {/* Instructions */}
-      
-    </div>
       </div>
+      </>
     </LeafletContext.Provider>
   );
 }
