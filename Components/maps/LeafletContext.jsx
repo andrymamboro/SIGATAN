@@ -1,6 +1,7 @@
 'use client'; // Required for Next.js 13/14/15 App Router
 
-import { createContext, useContext } from 'react';
+import * as React from 'react';
+const { createContext, useContext } = React;
 
 export const CONTEXT_VERSION = 1;
 
