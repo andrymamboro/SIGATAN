@@ -10,14 +10,17 @@ export function extendContext(source, extra) {
   return Object.freeze({
     ...source,
     ...extra
-  });
+  });re
 }
+
 export const LeafletContext = createContext(null);
 export const LeafletProvider = LeafletContext.Provider;
+
 export function useLeafletContext() {
   const context = useContext(LeafletContext);
-  if (context == null) {
-    throw new Error('No context provided: useLeafletContext() can only be used in a descendant of <MapContainer>');
+  // Optional: check if context exists
+  if (!context) {
+    throw new Error("useLeafletContext must be used within a LeafletProvider");
   }
   return context;
-} 
+}
