@@ -97,7 +97,7 @@ export default function Wilayah() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Data Wilayah</h1>
+      <h1 className="text-2xl font-bold mb-4 text-white">Data Wilayah</h1>
       {loading && <p>Memuat data wilayah...</p>}
       {error && <p className="text-red-500">Gagal memuat data: {error}</p>}
       {!loading && !error && (
@@ -155,20 +155,20 @@ export default function Wilayah() {
           </div>
           {/* Pagination */}
           <div className="flex justify-between items-center mt-4">
-            <span className="text-sm text-slate-500">Halaman {page} dari {totalPages}</span>
+            <span className="text-sm text-white">Halaman {page} dari {totalPages}</span>
             <div className="flex gap-2">
-              <Button size="icon" variant="outline" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} aria-label="Sebelumnya">
-                <ChevronLeft className="w-5 h-5 text-blue-600" />
+              <Button size="icon" variant="outline" className="bg-blue-500" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} aria-label="Sebelumnya">
+                <ChevronLeft className="w-5 h-5 text-white" />
               </Button>
-              <Button size="icon" variant="outline" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} aria-label="Berikutnya">
-                <ChevronRight className="w-5 h-5 text-blue-600" />
+              <Button size="icon" variant="outline" className="bg-blue-500"  onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} aria-label="Berikutnya">
+                <ChevronRight className="w-5 h-5 text-white " />
               </Button>
             </div>
           </div>
 
           {/* Modal Tambah/Edit */}
           <Dialog open={showModal} onOpenChange={setShowModal}>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-w-md bg-gray-100">
               <DialogHeader>
                 <DialogTitle>{editData ? 'Edit Wilayah' : 'Tambah Wilayah'}</DialogTitle>
               </DialogHeader>

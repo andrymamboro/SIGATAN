@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 export default function StatsCard({ title, value, icon: Icon, color, subtext }) {
   const colorClasses = {
     blue: {
+      className:'width-80',
       card: 'bg-gradient-to-br from-blue-500 to-blue-600',
       icon: 'bg-white/20 text-white',
       text: 'text-white',
@@ -50,18 +51,18 @@ export default function StatsCard({ title, value, icon: Icon, color, subtext }) 
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className={`border-0 shadow-lg hover:shadow-xl transition-all duration-300 ${colors.card}`}>
-        <CardContent className="p-6">
-          <div className="flex items-start justify-between">
+      <Card className={`border-0 shadow-lg hover:shadow-xl transition-all duration-300 ${colors.card} w-full max-w-xs`}>
+        <CardContent className="p-3">
+          <div className="flex items-start justify-between min-h-0">
             <div>
-              <p className={`text-sm font-medium mb-1 ${colors.subtext}`}>{title}</p>
-              <h3 className={`text-3xl font-bold ${colors.text}`}>{value}</h3>
+              <p className={`text-xs font-medium mb-0.5 ${colors.subtext}`}>{title}</p>
+              <h3 className={`text-2xl font-bold ${colors.text}`}>{value}</h3>
               {subtext && (
-                <p className={`text-xs mt-1 ${colors.subtext}`}>{subtext}</p>
+                <p className={`text-xs mt-0.5 ${colors.subtext}`}>{subtext}</p>
               )}
             </div>
-            <div className={`p-3 rounded-xl ${colors.icon}`}>
-              <Icon className="w-6 h-6" />
+            <div className={`p-2 rounded-lg ${colors.icon}`}>
+              <Icon className="w-5 h-5" />
             </div>
           </div>
         </CardContent>

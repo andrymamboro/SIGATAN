@@ -680,7 +680,7 @@ export default function SuratPenyerahan({ tanah, wilayah, printRef }) {
           </tbody>
         </table>
 
-        <p style={{ lineHeight: '115%' }}>Luas tanah yang dipindahkan /diserahkan lebih kurang [luas perkalian] = <u>+</u> <b>{(tanah?.luas_meter || 0) % 1 === 0 ? Math.floor(tanah?.luas_meter || 0) : (tanah?.luas_meter || 0).toString().replace('.', ',')} M<sup>2</sup></b></p>
+        <p style={{ lineHeight: '115%' }}>Luas tanah yang dipindahkan /diserahkan Kurang Lebih <b>  {tanah.luas_perkalian} = ± {(tanah?.luas_meter || 0) % 1 === 0 ? Math.floor(tanah?.luas_meter || 0) : (tanah?.luas_meter || 0).toString().replace('.', ',')} M<sup>2</sup></b></p>
         <p style={{ lineHeight: '115%' }}><b>({tanah?.luas_terbilang}{tanah?.luas_terbilang && !tanah.luas_terbilang.toLowerCase().includes('meter persegi') ? ' Meter Persegi' : ''})</b>,</p>
         <p style={{ lineHeight: '115%', marginBottom: '12pt' }}>Letak tanah : {tanah?.lokasi}</p>
 

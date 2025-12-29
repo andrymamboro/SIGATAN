@@ -15,12 +15,14 @@ export default function SuratPermohonan({ tanah, pejabat, printRef }) {
       className="print-container"
       style={{
         fontFamily: 'Times New Roman, serif',
-        fontSize: '11pt',
-        padding: '20pt 36pt 36pt 36pt',
-        maxWidth: '21cm',
+        fontSize: '10pt',
+        padding: '0 30pt 30pt 30pt',
+        width: '21cm',
+        minHeight: '29.7cm',
+        maxHeight: '29.7cm',
         margin: '0 auto',
         backgroundColor: 'white',
-        border: '1px solid #ccc',
+        border: '0px solid #ccc',
         boxShadow: '0 0 10px rgba(0,0,0,0.1)'
       }}
     >
@@ -28,7 +30,7 @@ export default function SuratPermohonan({ tanah, pejabat, printRef }) {
         {`
           @media print {
             @page {
-              margin: 20pt 36pt 36pt 36pt;
+              margin: 10pt 10pt 10pt 10pt;
               size: A4;
             }
             body * {
@@ -51,32 +53,28 @@ export default function SuratPermohonan({ tanah, pejabat, printRef }) {
               visibility: hidden !important;
             }
             .print-container {
-              position: absolute;
+              position: absolute !important;
               left: 0;
               top: 0;
               border: none !important;
               box-shadow: none !important;
-              margin: 0 !important;
-              max-width: 100% !important;
+              margin: 20pt auto !important;
+              width: 21cm !important;
+              min-height: 29.7cm !important;
+              max-height: 29.7cm !important;
+              overflow: hidden !important;
+              padding-top: 0 !important;
+              margin-bottom: 20cm ;
             }
           }
         `}
       </style>
       
-      {/* Print Date */}
-      <div className="print-only" style={{
-        position: 'fixed',
-        bottom: '10pt',
-        left: '10pt',
-        fontSize: '8pt',
-        color: '#666',
-        zIndex: 1
-      }}>
-        {format(new Date(), 'dd/MM/yyyy')}
-      </div>
+      
 
       {/* Right aligned header */}
-      <table style={{ marginLeft: '332.55pt', borderCollapse: 'collapse', marginBottom: '5pt' }}>
+      <p>&nbsp;</p>
+      <table style={{ marginLeft: '332.55pt', borderCollapse: 'collapse', marginBottom: '5pt',  }}>
         <tbody>
           <tr>
             <td style={{ width: '35.45pt', padding: '0', verticalAlign: 'top' }}>
@@ -206,12 +204,26 @@ export default function SuratPermohonan({ tanah, pejabat, printRef }) {
         maka segala akibat yang ditimbulkan sepenuhnya menjadi tanggung jawab saya dan bersedia dituntut berdasarkan hukum yang berlaku.
       </p>
 
+      {/* QR Code absolute di atas tanda tangan */}
+      {tanah?.latitude && tanah?.longitude && (
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          marginTop: '0pt',
+          zIndex: 10,
+          width: '100px',
+          textAlign: 'center',
+        }}>
+         
+        </div>
+      )}
       {/* Signature section */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginLeft: '40.85pt', marginTop: '5pt' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', marginLeft: '40.85pt', marginTop: '5pt', marginBottom: '0pt' }}>
         <tbody>
+          
           <tr>
             <td style={{ width: '248.05pt', padding: '0', verticalAlign: 'top' }}>
-              <p style={{ margin: 0 }}>&nbsp;</p>
             </td>
             <td style={{ width: '241pt', padding: '0', verticalAlign: 'top' }}>
               <p style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', margin: 0 }}>
@@ -226,6 +238,17 @@ export default function SuratPermohonan({ tanah, pejabat, printRef }) {
           </tr>
         </tbody>
       </table>
+       {/* Print Date */}
+      <div className="print-only" style={{
+        position: 'fixed',
+        bottom: '20pt',
+        left: '10pt',
+        fontSize: '8pt',
+        color: '#666',
+        zIndex: 1
+      }}>
+        {format(new Date(), 'dd/MM/yyyy')}
+      </div>
     </div>
   );
 }

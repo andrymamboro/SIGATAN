@@ -245,7 +245,7 @@ export default function SuratSKPT({ tanah, wilayah, printRef }) {
             <img 
               width="70" 
               height="70"
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`)}`}
+              // ...existing code...
               alt="QR Code Koordinat"
               style={{border: '1px solid #ccc'}}
             />

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
   LayoutDashboard, 
-  Map, 
+  // ...existing code...
   FileText, 
   Users, 
   ClipboardList,
@@ -15,7 +15,11 @@ import {
   UserCircle,
   BookOpen,
   Globe,
-  UserCog
+  UserCog,
+  DatabaseBackupIcon,
+  DatabaseZap,
+  SortAscIcon,
+  Table2Icon
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,7 +32,7 @@ const TanahIcon = (props) => (
     <rect x="12" y="6" width="8" height="6" fill="#fbbf24" stroke="#b45309" strokeWidth="2"/>
   </svg>
 );
-// Custom SVG icon for Map/Globe
+// ...existing code...
 const GlobeIcon = (props) => (
   <svg width="22" height="22" viewBox="0 0 32 32" fill="none" {...props}>
     <rect x="4" y="8" width="8" height="20" fill="#fbbf24" stroke="#b45309" strokeWidth="2"/>
@@ -38,11 +42,12 @@ const GlobeIcon = (props) => (
 );
 const menuItems = [
   { name: 'Dashboard', icon: (props) => <LayoutDashboard {...props} color="#38bdf8" />, page: 'Dashboard' },
-  { name: 'Peta Tanah', icon: (props) => <Flag {...props} color="#f59e42" />, page: 'PetaTanah' },
-  { name: 'Data Tanah', icon: (props) => <TanahIcon {...props} />, page: 'DataTanah' },
+  { name: 'Peta Tanah', icon: (props) => <Globe {...props} color="#f59e42" />, page: 'PetaTanah' },
+  { name: 'Data Tanah', icon: (props) => <Table2Icon {...props} />, page: 'DataTanah' },
   { name: 'Pejabat', icon: (props) => <UserCircle {...props} color="#fbbf24" />, page: 'Pejabat' },
   { name: 'Laporan', icon: (props) => <BookOpen {...props} color="#a3e635" />, page: 'Laporan' },
   { name: 'Wilayah', icon: (props) => <GlobeIcon {...props} />, page: 'Wilayah' },
+  { name: 'Tes Map', icon: (props) => <Globe {...props} color="#38bdf8" />, page: 'TesMap' },
   { name: 'Profil', icon: (props) => <Users {...props} color="#818cf8" />, page: 'Profil' },
   { name: 'Manajemen User', icon: (props) => <UserCog {...props} color="#f87171" />, page: 'ManajemenUser', superAdminOnly: true },
 ];
@@ -63,7 +68,7 @@ export default function Sidebar({ collapsed, setCollapsed, user, onLogout }) {
       {/* Sidebar */}
       <aside 
         className={cn(
-          "fixed top-0 left-0 z-50 h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-blue-900 text-white transition-all duration-300 shadow-2xl",
+          "fixed top-0 left-0 z-[9999] h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white transition-all duration-300 shadow-[0_8px_32px_0_rgba(76,29,149,0.45)]",
           collapsed ? "w-0 lg:w-20" : "w-72"
         )}
       >
@@ -127,7 +132,7 @@ export default function Sidebar({ collapsed, setCollapsed, user, onLogout }) {
                   <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-br from-white/10 to-blue-900/30 shadow-inner">
                     <item.icon className="w-5 h-5 flex-shrink-0" />
                   </span>
-                  {!collapsed && <span className="font-medium">{item.name}</span>}
+                  {!collapsed && <span className="font-bold">{item.name}</span>}
                 </Link>
               );
             })}

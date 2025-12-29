@@ -195,11 +195,11 @@ export default function Pejabat() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-blue-600" />
+          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+            <Users className="w-8 h-8 text-white" />
             Data Pejabat
           </h1>
-          <p className="text-slate-500 mt-1">
+          <p className="text-white mt-1">
             Kelola data pejabat penanda tangan
           </p>
         </div>
@@ -217,7 +217,7 @@ export default function Pejabat() {
       </div>
 
       {/* Filters */}
-      <Card className="border-0 shadow-md">
+      <Card className="border-0 shadow-md bg-transparent">
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
@@ -226,11 +226,11 @@ export default function Pejabat() {
                 placeholder="Cari nama, NIP, atau kecamatan..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 border-2 border-white-500 text-white placeholder-white"
               />
             </div>
             <Select value={filterJabatan} onValueChange={setFilterJabatan}>
-              <SelectTrigger className="w-full md:w-64">
+              <SelectTrigger className="w-full md:w-64 border-2 border-white-500 text-white">
                 <SelectValue placeholder="Filter Jabatan" />
               </SelectTrigger>
               <SelectContent>
@@ -256,27 +256,27 @@ export default function Pejabat() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-slate-50 to-slate-100 border-b-2 border-slate-200">
+                <thead className="bg-blue-700 border-b-2 border-blue-700">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                       No
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                       Nama & NIP
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                       Jabatan
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                       Wilayah
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                       Selaku
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
                       Aksi
                     </th>
                   </tr>
@@ -290,7 +290,7 @@ export default function Pejabat() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
                         transition={{ delay: index * 0.03 }}
-                        className="hover:bg-slate-50 transition-colors duration-150"
+                        className={`hover:bg-slate-50 transition-colors duration-150 ${index % 2 === 1 ? 'bg-gray-300' : 'bg-white'}`}
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                           {index + 1}
@@ -341,7 +341,7 @@ export default function Pejabat() {
                               variant="ghost" 
                               size="sm"
                               onClick={() => handleEdit(pejabat)}
-                              className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                              className="text-blue-600 hover:text-green-700 hover:bg-green-50"
                             >
                               <Pencil className="w-4 h-4" />
                             </Button>
@@ -349,7 +349,7 @@ export default function Pejabat() {
                               variant="ghost" 
                               size="sm"
                               onClick={() => setDeleteId(pejabat.id)}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              className="text-red-600 hover:text-green-700 hover:bg-blue-50"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -367,12 +367,11 @@ export default function Pejabat() {
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg bg-gray-100">
           <DialogHeader>
             <DialogTitle className="text-xl">
               {editingPejabat ? 'Edit Data Pejabat' : 'Tambah Pejabat Baru'}
-            </DialogTitle>
-          </DialogHeader>
+            </DialogTitle>          </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -381,7 +380,7 @@ export default function Pejabat() {
                   value={formData.kecamatan} 
                   onValueChange={(v) => setFormData({ ...formData, kecamatan: v, kelurahan: '' })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-blue-500">
                     <SelectValue placeholder="Pilih Kecamatan" />
                   </SelectTrigger>
                   <SelectContent>
@@ -397,7 +396,7 @@ export default function Pejabat() {
                   value={formData.kelurahan} 
                   onValueChange={(v) => setFormData({ ...formData, kelurahan: v })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="border-2 border-blue-500">
                     <SelectValue placeholder="Pilih Kelurahan" />
                   </SelectTrigger>
                   <SelectContent>
@@ -410,8 +409,9 @@ export default function Pejabat() {
             </div>
 
             <div className="space-y-2">
-              <Label>Nama Pejabat *</Label>
+              <Label className="">Nama Pejabat *</Label>
               <Input
+                className=""
                 value={formData.nama}
                 onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
                 placeholder="Nama lengkap"
@@ -421,13 +421,14 @@ export default function Pejabat() {
 
             <div className="space-y-2">
               <Label>Jabatan *</Label>
-              <Select 
+              <Select
+                
                 value={formData.jabatan} 
                 onValueChange={(v) => setFormData({ ...formData, jabatan: v })}
               >
-                <SelectTrigger>
+                <SelectTrigger className= "border-2 border-blue-500">
                   <SelectValue placeholder="Pilih Jabatan" />
-                </SelectTrigger>
+                </SelectTrigger >
                 <SelectContent>
                   {JABATAN_OPTIONS.map(j => (
                     <SelectItem key={j} value={j}>{j}</SelectItem>

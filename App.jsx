@@ -18,6 +18,7 @@ const Login = React.lazy(() => import('./Pages/Login'));
 const Test = React.lazy(() => import('./Pages/Test'));
 const Wilayah = React.lazy(() => import('./Pages/Wilayah'));
 const UserProfile = React.lazy(() => import('./Pages/UserProfile'));
+const TesMap = React.lazy(() => import('./Pages/TesMap'));
 
 // Create query client
 const queryClient = new QueryClient({
@@ -55,7 +56,8 @@ function App() {
           <Route path="/manajemenuser" element={<Layout currentPageName="Manajemen User"><ManajemenUser /></Layout>} />
           <Route path="/backuprestore" element={<Layout currentPageName="Backup & Restore"><BackupRestore /></Layout>} />
           <Route path="/wilayah" element={<Layout currentPageName="Wilayah"><Wilayah /></Layout>} />
-           <Route path="/profil" element={<Layout currentPageName="Profil Pengguna"><UserProfile /></Layout>} />
+          <Route path="/tesmap" element={<Layout currentPageName="Tes Map"><TesMap /></Layout>} />
+          <Route path="/profil" element={<Layout currentPageName="Profil Pengguna"><UserProfile /></Layout>} />
           
           {/* 404 */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

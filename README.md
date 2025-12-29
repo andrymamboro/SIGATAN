@@ -6,7 +6,7 @@ Sistem Manajemen Data Pertanahan berbasis web menggunakan React, TypeScript, dan
 
 - **Dashboard Interaktif** - Statistik dan visualisasi data tanah
 - **Manajemen Data Tanah** - CRUD lengkap untuk data pertanahan
-- **Peta Interaktif** - Visualisasi lokasi tanah dengan Leaflet
+  
 - **Manajemen Pejabat** - Kelola data pejabat terkait
 - **Sistem Laporan** - Generate dokumen administrasi (Surat Permohonan, SKPT, Berita Acara, dll)
 - **Autentikasi & Otorisasi** - Role-based access control (Admin & User)
@@ -22,7 +22,7 @@ app_pertanahan/
 │   ├── dashboard/            # Dashboard components
 │   ├── forms/                # Form components
 │   ├── layout/               # Layout components (Sidebar)
-│   ├── maps/                 # Map components (Leaflet)
+│   ├── maps/                 # Map components (di-nonaktifkan)
 │   ├── reports/              # Report templates
 │   ├── ui/                   # Shadcn UI components
 │   └── utils/                # Utility components
@@ -60,7 +60,7 @@ app_pertanahan/
 - **UI Components:** Shadcn/ui + Radix UI
 - **State Management:** TanStack Query (React Query)
 - **Routing:** React Router DOM
-- **Maps:** Leaflet + React Leaflet
+  
 - **Animations:** Framer Motion
 - **Icons:** Lucide React
 - **Notifications:** Sonner

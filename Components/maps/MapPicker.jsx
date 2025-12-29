@@ -1,535 +1,383 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { LeafletContext } from './LeafletContext';
-import { createPortal } from 'react-dom';
-import { MapContainer, TileLayer, Marker, Polygon, useMap, useMapEvents } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-draw/dist/leaflet.draw.css';
-import L from 'leaflet';
-import { createCircleIcon, getPolygonColors } from './utils';
-import 'leaflet-draw';
-import { Card } from "@/components/ui/card";
+import React, { useState, Suspense, useRef, useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polygon,
+  Polyline,
+  Tooltip,
+  FeatureGroup,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
+import { EditControl } from "react-leaflet-draw";
+import "leaflet-draw";
+import { useTanahList, useCurrentUser } from "@/lib/utilsUser";
+import { getColors } from "./utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Navigation, Search, Loader2, Pencil, Map as MapIcon, Globe, Eye, EyeOff, Shapes, ShapesIcon } from 'lucide-react';
-import { toast } from 'sonner';
+import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { Eye, EyeOff } from "lucide-react";
 
-// Fix for Leaflet pointer event warning
-if (typeof window !== 'undefined' && L.DomEvent) {
-  // Patch Leaflet to handle missing pointer events
-  const originalRemove = L.DomEvent.removePointerListener;
-  L.DomEvent.removePointerListener = function(obj, type, handler) {
-    const pointerEvents = {
-      pointerdown: true,
-      pointermove: true,
-      pointerup: true,
-      pointercancel: true,
-      pointerenter: true,
-      pointerleave: true,
-      pointerover: true,
-      pointerout: true
-    };
-    
-    if (!pointerEvents[type]) {
-      // Silently ignore invalid pointer events instead of warning
-      return;
-    }
-    
-    return originalRemove.call(this, obj, type, handler);
-  };
-}
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-// Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
 });
 
-// Hapus custom flagIcon, gunakan createCircleIcon dari utils.js
 
-function LocationMarker({ position, setPosition, mode }) {
-  const markerRef = useRef(null);
+function MapPicker({
+  center,
+  zoom = 15,
+  isPicker = false,
+  selected,
+  onMapClick,
+  mapType = "hybrid",
+  mapCenter,
+  mapZoom
+}) {
+  // Untuk debug: data terakhir yang dikirim ke onChange
+  const [lastOnChange, setLastOnChange] = useState(null);
+  // Semua hook harus di atas sebelum return apapun
+  const mapRef = useRef();
+  const featureGroupRef = useRef();
 
-  const map = useMapEvents({
-    click(e) {
-      if (mode === 'marker') {
-        setPosition([e.latlng.lat, e.latlng.lng]);
-      }
-    },
-  });
-
+  // Update center/zoom jika props berubah
   useEffect(() => {
-    if (position && mode === 'marker') {
-      map.flyTo(position, map.getZoom());
+    if (mapRef.current && mapCenter && Array.isArray(mapCenter)) {
+      mapRef.current.setView(mapCenter, mapZoom || zoom);
     }
-  }, [position, map, mode]);
+  }, [mapCenter, mapZoom]);
+  const user = useCurrentUser();
+  const { data: tanahList = [], isLoading } = useTanahList(user);
+  const showTooltips = true;
+  const [showMarkersState, setShowMarkersState] = useState(true);
+  const [showPolygonsState, setShowPolygonsState] = useState(true);
+  const [showPolylinesState, setShowPolylinesState] = useState(true);
+  const [showTooltipState, setShowTooltipState] = useState(showTooltips);
+  const tanahfiltered = tanahList;
+  const defaultCenter = [-0.78961418, 119.89162106];
+  const googleUrl = `https://mt1.google.com/vt/lyrs=${mapType === "hybrid" ? "y,h" : "y"}&x={x}&y={y}&z={z}`;
+  const attribution = mapType === "hybrid" ? "Map data ©2025 Google" : "&copy; OpenStreetMap contributors";
 
-  const eventHandlers = {
-    dragend() {
-      const marker = markerRef.current;
-      if (marker != null) {
-        const pos = marker.getLatLng();
-        setPosition([pos.lat, pos.lng]);
-      }
-    },
-  };
-
-  // Gunakan icon yang sama dengan TanahMap
-  return position ? (
-    <Marker
-      draggable={mode === 'marker'}
-      eventHandlers={eventHandlers}
-      position={position}
-      ref={markerRef}
-      icon={createCircleIcon('Ungu', 20)}
-    />
-  ) : null;
-}
-
-function DrawControl({ onPolygonComplete, polygonCoords, mode }) {
-  const map = useMap();
-  const drawnItemsRef = useRef(new L.FeatureGroup());
-
-  useEffect(() => {
-    if (mode !== 'polygon') return;
-
-    const drawnItems = drawnItemsRef.current;
-    map.addLayer(drawnItems);
-
-    // Load existing polygon if provided
-    if (polygonCoords && polygonCoords.length > 0) {
-      const polygon = L.polygon(polygonCoords, {
-        color: '#3b82f6',
-        fillColor: '#3b82f6',
-        fillOpacity: 0.3,
-        weight: 1
-      });
-      drawnItems.addLayer(polygon);
-    }
-
-    const drawControl = new L.Control.Draw({
-      draw: {
-        polygon: {
-          allowIntersection: false,
-          shapeOptions: {
-            color: '#3b82f6',
-            fillColor: '#3b82f6',
-            fillOpacity: 0.3,
-            weight: 1
-          }
-        },
-        polyline: false,
-        rectangle: false,
-        circle: false,
-        marker: false,
-        circlemarker: false
-      },
-      edit: {
-        featureGroup: drawnItems,
-        remove: true
-      }
-    });
-
-    map.addControl(drawControl);
-
-    map.on(L.Draw.Event.CREATED, (e) => {
-      const layer = e.layer;
-      drawnItems.clearLayers();
-      drawnItems.addLayer(layer);
-      const coords = layer.getLatLngs()[0].map(latlng => [latlng.lat, latlng.lng]);
-      onPolygonComplete(coords);
-    });
-
-    map.on(L.Draw.Event.EDITED, (e) => {
-      const layers = e.layers;
-      layers.eachLayer((layer) => {
-        const coords = layer.getLatLngs()[0].map(latlng => [latlng.lat, latlng.lng]);
-        onPolygonComplete(coords);
-      });
-    });
-
-    map.on(L.Draw.Event.DELETED, () => {
-      onPolygonComplete(null);
-    });
-
-    return () => {
-      map.removeControl(drawControl);
-      map.removeLayer(drawnItems);
-      map.off(L.Draw.Event.CREATED);
-      map.off(L.Draw.Event.EDITED);
-      map.off(L.Draw.Event.DELETED);
-    };
-  }, [map, mode, onPolygonComplete]);
-
-  return null;
-}
-
-export default function MapPicker({ initialPosition = [-0.7861746, 119.8689641], initialPolygon = null, initialMode = 'marker', existingTanahData = [], onSelectLocation, onClose }) {
-  // Example value for context, you can expand as needed
-  const leafletContextValue = { initialPosition, initialPolygon, initialMode };
-  const [position, setPosition] = useState(initialPosition);
-  const [mapType, setMapType] = useState('satellite');
-  const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [mode, setMode] = useState(initialMode);
-  const [polygonCoords, setPolygonCoords] = useState(initialPolygon);
-  const [editingPointIndex, setEditingPointIndex] = useState(null);
-  const [showMarkers, setShowMarkers] = useState(true);
-  const [showPolygons, setShowPolygons] = useState(true);
-
-  const getCurrentLocation = () => {
-    setLoading(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const newPos = [pos.coords.latitude, pos.coords.longitude];
-          setPosition(newPos);
-          setLoading(false);
-          toast.success('Lokasi berhasil didapatkan');
-        },
-        (error) => {
-          setLoading(false);
-          toast.error('Gagal mendapatkan lokasi. Pastikan GPS aktif dan izinkan akses lokasi.');
-          console.error(error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      );
-    } else {
-      setLoading(false);
-      toast.error('Browser tidak mendukung geolokasi');
-    }
-  };
-
-  const handleSearch = async () => {
-    if (!searchQuery.trim() || searchQuery.trim().length < 2) return;
-    
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`
-      );
-      const data = await response.json();
-      
-      if (data && data.length > 0) {
-        const newPos = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-        setPosition(newPos);
-        toast.success('Lokasi ditemukan');
-      } else {
-        toast.error('Lokasi tidak ditemukan');
-      }
-    } catch (error) {
-      toast.error('Gagal mencari lokasi');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleConfirm = () => {
-    if (mode === 'marker') {
-      onSelectLocation({
-        latitude: position[0],
-        longitude: position[1],
-        type: 'marker'
-      });
-    } else if (mode === 'polygon' && polygonCoords) {
-      // Calculate center of polygon
-      const latSum = polygonCoords.reduce((sum, coord) => sum + coord[0], 0);
-      const lngSum = polygonCoords.reduce((sum, coord) => sum + coord[1], 0);
-      const centerLat = latSum / polygonCoords.length;
-      const centerLng = lngSum / polygonCoords.length;
-      
-      onSelectLocation({
-        latitude: centerLat,
-        longitude: centerLng,
-        type: 'polygon',
-        polygon: polygonCoords
-      });
-    } else {
-      toast.error('Silakan gambar polygon terlebih dahulu');
+  const [lastDraw, setLastDraw] = useState(null);
+  const handleCreated = (e) => {
+    // console.log('handleCreated called', e);
+    window._lastDrawEvent = e;
+    if (!onMapClick) {
+      console.warn('onMapClick prop tidak ada!');
       return;
     }
-    onClose();
+    if (e.layerType === 'marker') {
+      const { lat, lng } = e.layer.getLatLng();
+      const markerData = {
+        latitude: lat.toString(),
+        longitude: lng.toString(),
+        polygon_coords: null,
+        type: 'marker',
+      };
+      setLastDraw({ label: 'Marker', data: markerData });
+      setLastOnChange(markerData);
+      onMapClick(markerData);
+    } else if (e.layerType === 'polygon' || e.layerType === 'polyline') {
+      let coords = e.layer.getLatLngs();
+      if (Array.isArray(coords) && Array.isArray(coords[0])) {
+        coords = coords[0];
+      }
+      const arr = coords.map(c => [Number(c.lat), Number(c.lng)]);
+      let lat = null, lng = null;
+      if (arr.length > 0) {
+        const sum = arr.reduce((acc, [plat, plng]) => [acc[0] + plat, acc[1] + plng], [0, 0]);
+        lat = sum[0] / arr.length;
+        lng = sum[1] / arr.length;
+      }
+      const polyData = {
+        latitude: lat !== null ? lat.toString() : '',
+        longitude: lng !== null ? lng.toString() : '',
+        polygon_coords: arr,
+        type: e.layerType,
+      };
+      setLastDraw({ label: e.layerType === 'polygon' ? 'Polygon' : 'Polyline', data: polyData });
+      setLastOnChange(polyData);
+      onMapClick(polyData);
+    } else {
+      console.warn('handleCreated: layerType tidak dikenali', e.layerType, e);
+    }
   };
 
-  const tileLayers = {
-    satellite: {
-      // Google Hybrid (unofficial, for demo/educational use only)
-      url: 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-      attribution: 'Map data ©2025 Google, Imagery ©2025 TerraMetrics',
-    },
-    street: {
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      attribution: 'Map data ©2025 Google, Imagery ©2025 TerraMetrics',
-    },
-  };
-
-  function FloatingControls() {
-    const isSatellite = mapType === 'satellite';
+  if (isLoading) {
     return (
-      <div style={{ position: 'absolute', top: 12, left: 56, zIndex: 1000, display: 'flex', flexDirection: 'row', gap: 8 }}>
-        {/* Map type toggle button */}
-              {/* Mode toggle button (marker/polygon) */}
-        
-        <Button
-          onClick={getCurrentLocation}
-          disabled={loading}
-          className={`h-8 px-2 ${loading ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-blue-900 text-white' : 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white'}`}
-          title="Gunakan Lokasi GPS Saya"
-        >
-          {loading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Navigation className="w-4 h-4" />
-          )}
-        </Button>
-        {/* Drawing mode trigger button (existing) */}
-        
-        {/* Tambahan 2 tombol */}
-        <Button
-          className={`h-8 px-2 ${showMarkers ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-blue-900 text-white' : 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-gray-700'}`}
-          title={showMarkers ? 'Sembunyikan Marker' : 'Tampilkan Marker'}
-          onClick={() => setShowMarkers(v => !v)}
-        >
-          {showMarkers ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-        </Button>
-        
-        <button
-          type="button"
-          onClick={() => setMode(mode === 'marker' ? 'polygon' : 'marker')}
-          className={mode === 'marker'
-            ? 'bg-gradient-to-r from-blue-700 via-blue-800 to-blue-900 text-white border border-blue-900 rounded w-8 h-8 flex items-center justify-center shadow transition-colors duration-200'
-            : 'bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white border border-blue-700 rounded w-8 h-8 flex items-center justify-center shadow transition-colors duration-200'}
-          title={mode === 'marker' ? 'Ganti ke mode gambar Petak' : 'Ganti ke Marker'}
-        >
-          {mode === 'marker' ? (
-            <Pencil style={{ width: 14, height: 14 }} />
-          ) : (
-            <MapPin style={{ width: 14, height: 14 }} />
-          )}
-        </button>
+      <div
+        style={{
+          width: "100%",
+          height: 400,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Memuat data tanah...
       </div>
     );
   }
 
   return (
-    <LeafletContext.Provider value={leafletContextValue}>
-      <>
-        <div className="space-y-4">
-
-
-      {/* Map */}
-      <Card className="overflow-hidden" style={{ position: 'relative' }}>
-        <FloatingControls />
-        <MapContainer
-          center={position}
-          zoom={15}
-          style={{ height: '550px', width: '100%' }}
+    <>
+       <div
+        style={{
+          width: "100%",
+          height: 600,
+          border: "2px solid #e2e8f0",
+          borderRadius: 8,
+        }}
+      >
+      <div className="absolute z-[1000] top-10 right-16 flex flex-row gap-2 bg-white bg-opacity-80 p-1 rounded shadow-lg" style={{marginRight: '35px', marginTop: '8px'}}>
+        <Button
+          className="border-2 border-white"
+          size="sm"
+          variant={showTooltipState ? 'default' : 'outline'}
+          onClick={() => setShowTooltipState(v => !v)}
         >
-          <TileLayer
-            url={tileLayers[mapType].url}
-            attribution={tileLayers[mapType].attribution}
+          {showTooltipState ? <><Eye className="w-4 h-4 mr-1" /> Info</> : <><EyeOff className="w-4 h-4 mr-1" /> Info</>}
+        </Button>
+        <Button
+          className="border-2 border-white"
+          size="sm"
+          variant={showMarkersState ? 'default' : 'outline'}
+          onClick={() => setShowMarkersState(v => !v)}
+        >
+          {showMarkersState ? <><Eye className="w-4 h-4 mr-1" /> Marker</> : <><EyeOff className="w-4 h-4 mr-1" /> Marker</>}
+        </Button>
+      </div>
+      <MapContainer
+        center={mapCenter || center || defaultCenter}
+        zoom={mapZoom || zoom}
+        maxZoom={20}
+        style={{ width: "100%", height: "100%", borderRadius: 8 }}
+        ref={mapRef}
+      >
+        <TileLayer url={googleUrl} attribution={attribution} maxZoom={20} />
+        <FeatureGroup ref={featureGroupRef}>
+          <EditControl
+            position="topleft"
+            onCreated={handleCreated}
+            featureGroup={featureGroupRef.current}
+            draw={{
+              marker: true,
+              polyline: true,
+              polygon: true,
+              circle: false,
+              rectangle: false,
+              circlemarker: false,
+            }}
           />
-          {/* Marker klik/tap selalu tampil */}
-          <LocationMarker position={position} setPosition={setPosition} mode={mode} />
-          <DrawControl 
-            mode={mode}
-            onPolygonComplete={setPolygonCoords}
-            polygonCoords={polygonCoords}
-          />
-          {showPolygons && polygonCoords && Array.isArray(polygonCoords) && polygonCoords.length >= 3 && mode === 'polygon' && (
-            <Polygon
-              positions={polygonCoords}
-              pathOptions={{
-                color: '#3b82f6',
-                fillColor: '#3b82f6',
-                fillOpacity: 0.3,
-                weight: 2
-              }}
-            />
-          )}
-          {/* Show existing tanah data */}
-          {existingTanahData.map((tanah) => {
-            if (!tanah.latitude || !tanah.longitude) return null;
-            let { color } = getPolygonColors(tanah.status, false);
-            if (tanah.status === 'Selesai') color = '#f97316'; // orange
-            const positionDb = [tanah.latitude, tanah.longitude];
-            // Parse polygon/polyline coords if string
-            let coords = null;
-            if ((tanah.location_type === 'polygon' || tanah.location_type === 'polyline') && tanah.polygon_coords) {
-              try {
-                coords = typeof tanah.polygon_coords === 'string'
-                  ? JSON.parse(tanah.polygon_coords)
-                  : tanah.polygon_coords;
-                if (!Array.isArray(coords) || coords.length < 2) {
-                  coords = null;
-                }
-              } catch (e) {
-                coords = null;
-              }
-            }
-            return (
-              <React.Fragment key={tanah.id}>
-                {/* Polygon jika titik >= 3, Polyline jika titik >= 2 dan < 3 */}
-                {coords && coords.length >= 3 ? (
-                  <Polygon
-                    positions={coords}
-                    pathOptions={{
-                      color: color,
-                      fillColor: color,
-                      fillOpacity: 0.2,
-                      weight: 2,
-                    }}
-                  />
-                ) : coords && coords.length === 2 ? (
-                  <Polyline
-                    positions={coords}
-                    pathOptions={{
-                      color: color,
-                      weight: 2,
-                    }}
-                  />
-                ) : null}
-                {/* Marker database hanya tampil jika showMarkers aktif */}
-                {showMarkers && (
-                  <Marker
-                    position={positionDb}
-                    icon={createCircleIcon(tanah.status || 'Selesai', 20)}
-                  />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </MapContainer>
-      </Card>
+        </FeatureGroup>
+        {/* Jika mode picker, tampilkan marker pada lokasi yang dipilih */}
+        {isPicker && selected && selected.latitude && selected.longitude && (
+          <Marker position={[selected.latitude, selected.longitude]}>
+            <Popup>Lokasi dipilih: {selected.latitude}, {selected.longitude}</Popup>
+          </Marker>
+        )}
+        {tanahfiltered.map((tanah, idx) => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const tanahId = urlParams.get('id');
+          const isSelected =  parseInt(tanah.id) === parseInt(tanahId);
+      // Marker
+      const marker =
+        tanah.latitude && tanah.longitude && showMarkersState ? (
+          <Marker
+            key={`marker-${idx}`}
+            position={[tanah.latitude, tanah.longitude]}
+          >
+            <Popup>
+            <TanahPopupContent tanah={tanah} />
+            </Popup>
+            {showTooltipState && (
+              <Tooltip
+                direction="top"
+                offset={[0, -10]}
+                permanent>
+                <span
+                  style={{
+                    background: isSelected ? '#f97316' : '#fff', // orange untuk terpilih, putih untuk lain
+                    color: isSelected ? '#fff' : '#000',
+                    fontWeight: 'bold',
+                    borderRadius: 6,
+                    border: '2px solid #fff',
+                    boxShadow: '0 2px 8px #0002',
+                    padding: '2px 8px',
+                    display: 'inline-block',
+                  }}
+                >
+                  {tanah.nama_pemilik}
+                </span>
+              </Tooltip>
+            )}
+          </Marker>
+        ) : null;
 
-      {/* Coordinates Display */}
-      {mode === 'marker' && (
-        <Card className="p-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label className="text-sm text-slate-600">Latitude</Label>
-              <Input
-                value={position[0].toFixed(7)}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  if (!isNaN(val)) setPosition([val, position[1]]);
-                }}
-                type="number"
-                step="0.0000001"
-              />
-            </div>
-            <div>
-              <Label className="text-sm text-slate-600">Longitude</Label>
-              <Input
-                value={position[1].toFixed(7)}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  if (!isNaN(val)) setPosition([position[0], val]);
-                }}
-                type="number"
-                step="0.0000001"
-              />
-            </div>
-          </div>
-        </Card>
-      )}
+      // Polygon
+      let polygonCoords = tanah.polygon_coords;
+      if (polygonCoords && typeof polygonCoords === "string") {
+        try {
+          polygonCoords = JSON.parse(polygonCoords);
+        } catch {
+          polygonCoords = null;
+        }
+      }
+      const { color, borderColor } = getColors(
+        tanah.status,
+      );
+      const polygon =
+        polygonCoords &&
+          Array.isArray(polygonCoords) &&
+          polygonCoords.length > 2 ? (
+          <Polygon
+            key={`polygon-${idx}`}
+            positions={polygonCoords}
+            pathOptions={{
+              color: borderColor,
+              fillColor: color,
+            }}
+          >
+            <Popup>
+              <div>
+                <b>Koordinat Polygon:</b>
+                <pre style={{ fontSize: 12, margin: 0 }}>
+                  {JSON.stringify(polygonCoords, null, 2)}
+                </pre>
+              </div>
+            </Popup>
+          </Polygon>
+        ) : null;
 
-      {mode === 'polygon' && (
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <Label className="text-sm text-slate-600">
-              Koordinat Polygon {polygonCoords ? `(${polygonCoords.length} titik)` : ''}
-            </Label>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                const newCoords = polygonCoords || [];
-                newCoords.push([position[0], position[1]]);
-                setPolygonCoords([...newCoords]);
-              }}
-            >
-              + Tambah Titik
-            </Button>
+      // Polyline
+      let polylineCoords = tanah.polyline_coords;
+      if (polylineCoords && typeof polylineCoords === "string") {
+        try {
+          polylineCoords = JSON.parse(polylineCoords);
+        } catch {
+          polylineCoords = null;
+        }
+      }
+      const polyline =
+        polylineCoords &&
+          Array.isArray(polylineCoords) &&
+          polylineCoords.length > 1 ? (
+          <Polyline
+            key={`polyline-${idx}`}
+            positions={polygonCoords}
+            color={color.borderColor}
+            fillColor={color.color}
+            fillOpacity={0.5}
+          >
+            <Popup>
+              <div>
+                <b>Koordinat Polyline:</b>
+                <pre style={{ fontSize: 12, margin: 0 }}>
+                  {JSON.stringify(polylineCoords, null, 2)}
+                </pre>
+              </div>
+            </Popup>
+          </Polyline>
+        ) : null;
+
+      return (
+        <React.Fragment key={idx}>
+          {marker}
+          {polygon}
+          {polyline}
+        </React.Fragment>
+      );
+    })}
+    
+        {/* Tabel koordinat temp mappicker kanan bawah */}
+        <div style={{
+          position: 'absolute',
+          right: 24,
+          bottom: 24,
+          zIndex: 9999,
+          background: 'rgba(255,255,255,0.10)',
+          borderRadius: 12,
+          boxShadow: '0 2px 12px #0002',
+          padding: 16,
+          minWidth: 260,
+          maxWidth: 340,
+          backdropFilter: 'blur(2px)',
+        }}>
+          <div style={{fontWeight: 'bold', color: '#0c4a6e', marginBottom: 8, fontSize: 15}}>
+            Koordinat Pusat: {lastDraw?.data?.latitude || '-'}, {lastDraw?.data?.longitude || '-'}
           </div>
-          
-          {polygonCoords && polygonCoords.length > 0 ? (
-            <div className="max-h-48 overflow-y-auto" style={{ gap: '0.375rem', display: 'flex', flexDirection: 'column' }}>
-              {polygonCoords.map((coord, idx) => (
-                <div key={idx} className="flex items-center gap-2 bg-slate-50 p-2 rounded">
-                  <span className="text-xs font-semibold text-slate-500 w-6">{idx + 1}.</span>
-                  <div className="flex-1 grid grid-cols-2 gap-2">
-                    <Input
-                      type="number"
-                      step="0.000001"
-                      value={coord[0]}
-                      onChange={(e) => {
-                        const newCoords = [...polygonCoords];
-                        newCoords[idx][0] = parseFloat(e.target.value) || 0;
-                        setPolygonCoords(newCoords);
-                      }}
-                      className="h-8 text-xs"
-                      placeholder="Latitude"
-                    />
-                    <Input
-                      type="number"
-                      step="0.000001"
-                      value={coord[1]}
-                      onChange={(e) => {
-                        const newCoords = [...polygonCoords];
-                        newCoords[idx][1] = parseFloat(e.target.value) || 0;
-                        setPolygonCoords(newCoords);
-                      }}
-                      className="h-8 text-xs"
-                      placeholder="Longitude"
-                    />
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      const newCoords = polygonCoords.filter((_, i) => i !== idx);
-                      setPolygonCoords(newCoords.length > 0 ? newCoords : null);
-                    }}
-                    className="h-8 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    ✕
-                  </Button>
-                </div>
+          <table style={{width: '100%', background: 'transparent', borderCollapse: 'collapse'}}>
+            <thead>
+              <tr style={{background: 'rgba(255,255,255,0.25)'}}>
+                <th style={{borderBottom: '1px solid #ddd', padding: '4px 8px', textAlign: 'center'}}>No</th>
+                <th style={{borderBottom: '1px solid #ddd', padding: '4px 8px', textAlign: 'center'}}>Lat</th>
+                <th style={{borderBottom: '1px solid #ddd', padding: '4px 8px', textAlign: 'center'}}>Long</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(Array.isArray(lastDraw?.data?.polygon_coords) ? lastDraw.data.polygon_coords : (lastDraw?.data?.latitude && lastDraw?.data?.longitude ? [[Number(lastDraw.data.latitude), Number(lastDraw.data.longitude)]] : [])).map(([lat, lng], idx) => (
+                <tr key={idx} style={{background: idx % 2 === 0 ? 'rgba(255,255,255,0.15)' : 'transparent'}}>
+                  <td style={{padding: '4px 8px', textAlign: 'center'}}>{idx + 1}</td>
+                  <td style={{padding: '4px 8px', textAlign: 'center'}}>{lat}</td>
+                  <td style={{padding: '4px 8px', textAlign: 'center'}}>{lng}</td>
+                </tr>
               ))}
-            </div>
-          ) : (
-            <div className="text-center py-4 text-sm text-slate-400">
-              Belum ada titik polygon. Gambar di peta atau tambah manual.
-            </div>
-          )}
-        </Card>
-      )}
-
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-3 pr-4">
-        <Button variant="outline" onClick={onClose}>
-          Batal
-        </Button>
-        <Button 
-          onClick={handleConfirm}
-          className="bg-green-600 hover:bg-green-700 text-white"
-        >
-          <MapPin className="w-4 h-4 mr-2" />
-          Pilih Lokasi Ini
-        </Button>
-        {/* Instructions */}
+              {(Array.isArray(lastDraw?.data?.polygon_coords) ? lastDraw.data.polygon_coords : (lastDraw?.data?.latitude && lastDraw?.data?.longitude ? [[Number(lastDraw.data.latitude), Number(lastDraw.data.longitude)]] : [])).length === 0 && (
+                <tr><td colSpan={3} style={{textAlign: 'center', color: '#64748b', padding: 8}}>Belum ada koordinat</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </MapContainer>
       </div>
-      </div>
-      </>
-    </LeafletContext.Provider>
+           
+    </>
   );
 }
+
+function TanahPopupContent({ tanah }) {
+  const displayLuas = tanah.luas_meter % 1 === 0
+    ? Math.floor(tanah.luas_meter)
+    : tanah.luas_meter.toString().replace('.', ',');
+
+  return (
+    <Suspense fallback={<div>Memuat detail...</div>}>
+      <div className="min-w-[220px] max-w-[260px] bg-white rounded-xl shadow-lg p-4 text-center space-y-3 border border-gray-200">
+        <p className="font-bold text-slate-800 text-base mb-1">
+          {tanah.nama_pemilik}
+          {tanah.nama_penerima && <span className="block text-xs font-normal text-slate-500">Penerima: {tanah.nama_penerima}</span>}
+        </p>
+        <div className="bg-blue-50 py-1 rounded border border-blue-100 font-semibold text-blue-700 text-sm">
+          {displayLuas} m²
+        </div>
+        <div className="flex justify-center py-1">
+          <img
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`)}`}
+            alt="QR"
+            className="w-16 h-16 border rounded shadow"
+          />
+        </div>
+        <Badge variant={tanah.status === 'Selesai' ? 'default' : tanah.status === 'Ditolak' ? 'destructive' : 'secondary'}>
+          {tanah.status || 'Proses'}
+        </Badge>
+        <Link to={`${createPageUrl('DetailTanah')}?id=${tanah.id}`} className="block mt-2">
+          <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+            <Eye className="w-4 h-4 mr-2" /> Detail
+          </Button>
+        </Link>
+      </div>
+    </Suspense>
+  );
+}
+
+export default MapPicker;

@@ -1,14 +1,6 @@
 // Utility: Mendapatkan warna background/fill polygon/polyline berdasarkan status
 // Catatan: Semua warna fill di bawah menggunakan alpha/transparansi (rgba) agar background polygon/polyline tidak menutupi peta sepenuhnya.
-export function getPolygonFillColor(status) {
-  // Untuk 'no color' (benar-benar transparan), gunakan status 'no-color' atau 'none'
-  if (status === 'no-color' || status === 'none') return 'rgba(0,0,0,0)'; // transparan penuh
-  if (status === 'Selesai') return 'rgba(251,146,60,0.18)'; // orange-400
-  if (status === 'Ditolak') return 'rgba(193,0,31,0.18)';
-  if (status === 'Hijau') return 'rgba(34,197,94,0.18)';
-  if (status === 'Ungu') return 'rgba(162,28,175,0.15)';
-  return 'rgba(59,130,246,0.18)'; // default biru
-}
+
 // Contoh: fillColor={getPolygonFillColor(tanah.status)}
 // Utility: Daftar warna untuk keterangan/legend status marker & polygon
 export const STATUS_COLOR_LEGEND = {
@@ -47,28 +39,49 @@ export function getSelectedPolygonColor() {
   return '#f97316'; // orange (atau ganti sesuai kebutuhan highlight)
 }
 
-export function getPolygonColors(status, isSelected) {
-  let color = (status === 'Selesai' ? '#EAB308' : status === 'Ditolak' ? '#ef4444' : '#3b82f6');
-  let borderColor = '#f97316';
-  if (isSelected) {
-    color = '#fff';
-    borderColor = '#EAB308';
-  }
-  return { color, borderColor };
+// utils.js
+export function getColors(status, isSelected) {
+  if (status === 'Selesai') return { color: 'transparent', borderColor: '#EAB308' };
+  if (status === 'Ditolak') return { color: 'transparent', borderColor: '#b91c1c' };
+  if (status === 'Proses') return { color: 'transparent', borderColor: '#1d4ed8' };
+  // Tambahkan status lain jika ada
+  return { color: 'transparent', borderColor: '#1d4ed8' }; // default biru
 }
+
+export function getPolygonFillColor(status) {
+   if (status === 'Selesai') return { color: '#22c55e', borderColor: '#16a34a' };
+  if (status === 'Ditolak') return { color: '#ef4444', borderColor: '#b91c1c' };
+  if (status === 'Proses') return { color: '#3b82f6', borderColor: '#1d4ed8' };
+  // Tambahkan status lain jika ada
+  return { color: '#3b82f6', borderColor: '#1d4ed8' }; // default biru
+}
+
 // Utility for custom circle marker icon (status color, white border, responsive size)
-import L from 'leaflet';
-export function createCircleIcon(status, zoom = 13) {
-  // Ukuran marker
-  const size = 16;
-  // Ambil warna status
-  const color = STATUS_COLOR_LEGEND[status]?.color || '#3b82f6';
-  return L.divIcon({
-    className: 'custom-marker-status',
-    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.18);"></div>`,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2], // tengah-tengah lingkaran
-    popupAnchor: [0, -size / 2],
-  });
-}
+
+// import L from 'leaflet';
+
+// export function createCircleIcon(status, size = 16) {
+//   if (typeof window === 'undefined' || typeof document === 'undefined' || !L?.divIcon) {
+//     // Bisa return null, atau fallback ke icon default Leaflet
+//     return undefined;
+//   }
+//   // Ambil warna dari legend, fallback ke biru jika status tidak ada
+//   const color = STATUS_COLOR_LEGEND[status]?.color || '#3b82f6';
+//   return L.divIcon({
+//     html: `<div style="
+//       background:${color};
+//       border:2px solid #fff;
+//       width:${size}px;height:${size}px;
+//       border-radius:50%;
+//       box-shadow:0 0 4px #0002;
+//       "></div>`,
+//     className: '',
+//     iconSize: [size, size],
+//     iconAnchor: [size / 2, size / 2],
+//     popupAnchor: [0, -size / 2]
+//   });
+
+
+
+
 

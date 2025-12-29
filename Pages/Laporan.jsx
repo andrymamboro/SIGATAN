@@ -146,21 +146,21 @@ export default function Laporan() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-          <ClipboardList className="w-8 h-8 text-blue-600" />
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <ClipboardList className="w-8 h-8 text-white" />
           Laporan & Surat
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-white mt-1">
           Cetak surat dan dokumen pertanahan
         </p>
       </div>
 
       {/* Selection */}
-      <Card className="border-0 shadow-md">
+      <Card className="border-0 shadow-md bg-transparent">
         <CardContent className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
             <div className="space-y-2">
-              <Label className="text-slate-700 font-medium">Pilih Data Tanah</Label>
+              <Label className="text-white font-medium">Pilih Data Tanah</Label>
               <Select 
                 value={selectedTanah ? `${selectedTanah.nama_pemilik} → ${selectedTanah.nama_penerima} (${selectedTanah.transaksi || 'Transaksi'})` : ''} 
                 onValueChange={(v) => {
@@ -168,12 +168,12 @@ export default function Laporan() {
                   setSelectedTanah(found);
                 }}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih data tanah..." />
+                <SelectTrigger className="text-white bg-gray-700">
+                  <SelectValue placeholder="Pilih data tanah..." className="text-white" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-gray-700">
                   {tanahList.map(tanah => (
-                    <SelectItem key={tanah.id} value={`${tanah.nama_pemilik} → ${tanah.nama_penerima} (${tanah.transaksi || 'Transaksi'})`}>
+                    <SelectItem key={tanah.id} value={`${tanah.nama_pemilik} → ${tanah.nama_penerima} (${tanah.transaksi || 'Transaksi'})`} className="text-white">
                       {tanah.nama_pemilik} → {tanah.nama_penerima} ({tanah.transaksi || 'Transaksi'})
                     </SelectItem>
                   ))}
@@ -182,14 +182,14 @@ export default function Laporan() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-slate-700 font-medium">Jenis Surat</Label>
-              <Select value={selectedReport} onValueChange={setSelectedReport}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih jenis surat..." />
+              <Label className="text-white font-medium">Jenis Surat</Label>
+              <Select value={selectedReport} onValueChange={setSelectedReport} >
+                <SelectTrigger className="bg-gray-700 text-white">
+                  <SelectValue placeholder="Pilih jenis surat..." className="text-white" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-gray-700">
                   {REPORT_TYPES.map(report => (
-                    <SelectItem key={report.id} value={report.id}>
+                    <SelectItem key={report.id} value={report.id} className="text-white">
                       {report.name}
                     </SelectItem>
                   ))}
@@ -221,14 +221,16 @@ export default function Laporan() {
           <Tabs value={selectedReport} onValueChange={setSelectedReport}>
             {REPORT_TYPES.map(report => (
               <TabsContent key={report.id} value={report.id}>
-                <Card className="border-0 shadow-lg overflow-hidden">
-                  <CardContent className="p-0 bg-slate-100">
-                    <div className="overflow-auto max-h-[80vh]">
-                      <report.component 
-                        tanah={selectedTanah}
-                        wilayah={filteredWilayah && filteredWilayah.length > 0 ? filteredWilayah[0] : {}}
-                        printRef={printRef}
-                      />
+                <Card className="border-0 shadow-lg overflow-hidden" style={{ background: 'linear-gradient(135deg, #4a484b 0%, #b6a3d5 100%)' }}>
+                  <CardContent className="p-0 bg-slate-100" style={{ background: 'linear-gradient(135deg, #4a484b 0%, #b6a3d5 100%)' }}>
+                    <div className="w-full overflow-auto" style={{ minHeight: '29.7cm' }}>
+                      <div style={{ width: '21cm', minHeight: '29.7cm', margin: '0 auto', background: 'white', boxShadow: '0 0 10px rgba(0,0,0,0.05)' }}>
+                        <report.component 
+                          tanah={selectedTanah}
+                          wilayah={filteredWilayah && filteredWilayah.length > 0 ? filteredWilayah[0] : {}}
+                          printRef={printRef}
+                        />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -239,11 +241,11 @@ export default function Laporan() {
       )}
 
       {!selectedTanah && (
-        <Card className="border-0 shadow-md">
+        <Card className="border-0 shadow-md bg-grey">
           <CardContent className="p-12 text-center">
-            <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-slate-600">Pilih Data Tanah</h3>
-            <p className="text-slate-400 mt-1">Silakan pilih data tanah untuk melihat dan mencetak surat</p>
+            <FileText className="w-12 h-12 text-white mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-white">Pilih Data Tanah</h3>
+            <p className="text-white mt-1">Silakan pilih data tanah untuk melihat dan mencetak surat</p>
           </CardContent>
         </Card>
       )}

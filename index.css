@@ -1,10 +1,18 @@
+/* Pastikan tombol Leaflet Draw selalu di atas */
+.leaflet-draw-toolbar-top, .leaflet-draw-toolbar {
+  z-index: 1200 !important;
+}
+.leaflet-draw {
+  z-index: 1200 !important;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 220 14% 90%; /* abu-abu tua, #e5e7eb */
+    /* --background: 220 14% 90%; abu-abu tua, #e5e7eb */
+    --background: linear-gradient(135deg, #444044 0%, #8f80a6 100%);
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -54,7 +62,7 @@
     @apply border-border;
   }
   body {
-    background-color: #e5e7eb; /* abu-abu tua, hsl(220,14%,90%) */
+    background: linear-gradient(135deg, #4a484b 0%, #b6a3d5 100%);
     @apply text-foreground;
   }
   .container, .card {
@@ -93,3 +101,4 @@
     margin: 1cm;
   }
 }
+

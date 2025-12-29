@@ -8,12 +8,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './'),
-      '@/components': path.resolve(__dirname, './Components'),
-      '@/pages': path.resolve(__dirname, './Pages'),
-      '@/lib': path.resolve(__dirname, './lib'),
-      '@/utils': path.resolve(__dirname, './utils'),
-      '@/api': path.resolve(__dirname, './api'),
-      '@/entities': path.resolve(__dirname, './Entities'),
+      '@components': path.resolve(__dirname, './Components'),
+      '@pages': path.resolve(__dirname, './Pages'),
+      '@lib': path.resolve(__dirname, './lib'),
+      '@utils': path.resolve(__dirname, './utils'),
+      '@api': path.resolve(__dirname, './api'),
+      '@entities': path.resolve(__dirname, './Entities'),
     },
   },
   server: {
@@ -26,12 +26,25 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('leaflet')) return 'leaflet';
+          // leaflet config removed
           if (id.includes('jspdf')) return 'pdf';
           if (id.includes('node_modules')) return 'vendor';
         },
       },
     },
-    chunkSizeWarningLimit: 1000, // Atur sesuai kebutuhan (dalam KB)
+    chunkSizeWarningLimit: 1000,
+    // Tambahan agar console.log tidak dihapus saat minify
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: false,
+      },
+    },
+  },
+  define: {
+    global: 'window',
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'], // paksa Vite prebundle React
   },
 });

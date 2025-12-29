@@ -18,10 +18,10 @@ export default function UserProfile() {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-slate-100">
-        <div className="bg-white rounded-2xl shadow-2xl p-10 border max-w-md w-full flex flex-col items-center">
+        <div className="bg-grey rounded-2xl shadow-2xl p-10 border max-w-md w-full flex flex-col items-center">
           <div className="text-5xl mb-4">🔒</div>
-          <div className="text-xl font-bold mb-2 text-center text-slate-700">Akses Ditolak</div>
-          <div className="text-slate-500 text-center mb-4">Data user tidak ditemukan atau Anda belum login.<br/>Silakan login untuk mengakses halaman profil.</div>
+          <div className="text-xl font-bold mb-2 text-center text-white">Akses Ditolak</div>
+          <div className="text-white text-center mb-4">Data user tidak ditemukan atau Anda belum login.<br/>Silakan login untuk mengakses halaman profil.</div>
           <a
             href="/login"
             className="mt-2 px-6 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
@@ -34,43 +34,36 @@ export default function UserProfile() {
   }
 
   // ...existing code...
-  if (user.role !== 'super_admin') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-slate-100">
-        <div className="bg-white rounded-2xl shadow-2xl p-10 border max-w-md w-full flex flex-col items-center">
-          <div className="text-5xl mb-4">⛔</div>
-          <div className="text-xl font-bold mb-2 text-center text-slate-700">Akses Ditolak</div>
-          <div className="text-slate-500 text-center mb-4">Hanya super admin yang dapat mengakses halaman ini.</div>
-        </div>
-      </div>
-    );
-  }
+  
 
   return (
-    <div className="flex justify-center items-center min-h-[70vh] bg-slate-50">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
+    <div className="flex justify-center items-center min-h-[70vh] bg-grey-100 p-6">
+      <div className="w-full max-w-lg bg-grey rounded-2xl shadow-xl p-8 border border-slate-200">
         <div className="flex flex-col items-center mb-8">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-4xl font-bold shadow-lg mb-4">
+          <div className="w-24 h-24 rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-lg mb-4 border border-white ">
             {user.full_name?.[0] || user.username?.[0] || 'U'}
           </div>
-          <h1 className="text-2xl font-bold mb-1">{user.full_name || user.username}</h1>
-          <div className="text-slate-500 text-sm mb-2">{user.username}</div>
+          <h1 className=" text-white text-2xl font-bold mb-1">{user.full_name || user.username}</h1>
           <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold capitalize mb-2">{user.role}</span>
         </div>
         <div className="space-y-4 divide-y divide-slate-100">
           <div className="flex justify-between pt-2">
-            <span className="text-slate-500 text-sm">Email</span>
-            <span className="font-semibold">{user.email || '-'}</span>
+            <span className="text-white text-sm">User Name</span>
+            <span className="text-white font-semibold">{user.username || '-'}</span>
+          </div>
+          <div className="flex justify-between pt-2">
+            <span className="text-white text-sm">Email</span>
+            <span className="text-white font-semibold">{user.email || '-'}</span>
           </div>
           {user.kecamatan && (
             <div className="flex justify-between pt-2">
-              <span className="text-slate-500 text-sm">Kecamatan</span>
-              <span className="font-semibold">{user.kecamatan}</span>
+              <span className="text-white text-sm">Kecamatan</span>
+              <span className="text-white font-semibold">{user.kecamatan}</span>
             </div>
           )}
           {user.kelurahan && (
             <div className="flex justify-between pt-2">
-              <span className="text-slate-500 text-sm">Kelurahan</span>
+              <span className="text-white text-sm">Kelurahan</span>
               <span className="font-semibold">{user.kelurahan}</span>
             </div>
           )}

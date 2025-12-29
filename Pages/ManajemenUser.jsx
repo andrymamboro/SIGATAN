@@ -204,11 +204,11 @@ export default function ManajemenUser() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
             <Users className="w-8 h-8 text-blue-600" />
             Manajemen User
           </h1>
-          <p className="text-slate-500 mt-1">
+          <p className="text-white mt-1">
             Kelola pengguna sistem
           </p>
         </div>

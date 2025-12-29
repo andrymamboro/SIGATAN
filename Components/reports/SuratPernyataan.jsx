@@ -176,7 +176,15 @@ export default function SuratPernyataan({ tanah, pejabat, printRef }) {
               <td style={{ padding: '0', verticalAlign: 'top' }}>
                 <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '10pt', lineHeight: '115%', textAlign: 'justify', marginTop: '5pt' }}>: {tanah?.batas_utara}</p>
               </td>
+            </tr> <tr>
+              <td style={{ width: '127.6pt', padding: '0', verticalAlign: 'top' }}>
+                <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '10pt', lineHeight: '115%', textIndent: '1.7pt', marginTop: '5pt' }}>Sebelah Timur dengan</p>
+              </td>
+              <td style={{ padding: '0', verticalAlign: 'top' }}>
+                <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '10pt', lineHeight: '115%', textAlign: 'justify', marginTop: '5pt' }}>: {tanah?.batas_timur}</p>
+              </td>
             </tr>
+
             <tr>
               <td style={{ padding: '0', verticalAlign: 'top' }}>
                 <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '10pt', lineHeight: '115%', textIndent: '1.7pt', marginTop: '5pt' }}>Sebelah Selatan dengan</p>

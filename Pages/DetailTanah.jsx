@@ -6,11 +6,11 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  ArrowLeft, 
-  User, 
-  MapPin, 
-  FileText, 
+import {
+  ArrowLeft,
+  User,
+  MapPin,
+  FileText,
   UserPlus,
   Printer,
   QrCode,
@@ -19,7 +19,7 @@ import {
   Banknote,
   BanknoteIcon,
   CreditCardIcon,
- 
+
   Contact2Icon,
   ArrowUp,
   ArrowDown,
@@ -45,14 +45,14 @@ import {
   AwardIcon,
   CheckIcon,
   CheckSquare2
- 
+
 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-import TanahMap from '@/components/maps/TanahMap';
+// Map/leaflet component removed
 
 export default function DetailTanah() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -86,17 +86,25 @@ export default function DetailTanah() {
     }).format(amount || 0);
   };
 
-  const formatDate = (date) => {
+  const formatDate = (date, short = false) => {
     if (!date) return '-';
     try {
       const dateObj = new Date(date);
       if (isNaN(dateObj.getTime())) return '-';
+      if (short) {
+        // dd/MM/yy
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const year = String(dateObj.getFullYear()).slice(-2);
+        return `${day}/${month}/${year}`;
+      }
       return format(dateObj, 'dd MMMM yyyy', { locale: id });
     } catch (error) {
-      return '-';    }
+      return '-';
+    }
   };
 
-  const qrValue = tanah?.latitude && tanah?.longitude 
+  const qrValue = tanah?.latitude && tanah?.longitude
     ? `https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`
     : '';
 
@@ -111,7 +119,7 @@ export default function DetailTanah() {
   if (!tanah) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold text-slate-800">Data tidak ditemukan</h2>
+        <h2 className="text-xl font-semibold text-white">Data tidak ditemukan</h2>
         <Link to={createPageUrl('DataTanah')}>
           <Button className="mt-4">Kembali ke Data Tanah</Button>
         </Link>
@@ -144,10 +152,10 @@ export default function DetailTanah() {
   };
 
   const InfoRow2 = ({ label, value, icon: Icon }) => (
-    <div className="flex items-start text-align-start"> 
+    <div className="flex items-start text-align-start">
       {Icon && <Icon className="w-4 h-4 text-emerald-500 mr-2" />}
       <span className="w-1/3 text-slate-500 text-xs ">{label}</span>
-      <span className="w-2/3 text-slate-500 text-xs ">{value || '-'}</span>
+      <span className="w-2/3 text-slate-500 text-xs truncate whitespace-nowrap overflow-hidden min-w-[180px]">{value || '-'}</span>
     </div>
   );
 
@@ -159,34 +167,34 @@ export default function DetailTanah() {
         <div className="flex items-center gap-4">
           <Link to={createPageUrl('DataTanah')}>
             <Button variant="outline" size="icon">
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 text-white" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Detail Data Tanah</h1>
-          
+            <h1 className="text-2xl font-bold text-white">Detail Data Tanah</h1>
+
           </div>
         </div>
         <div className="flex items-center gap-3">
           <Badge
-            className={`px-4 py-2 text-sm font-semibold rounded-lg shadow-sm border transition-all duration-200
+            className={`px-4 py-2 text-sm font-semibold rounded-lg shadow-sm border-1 border-white transition-all duration-200
               ${tanah.status === 'Selesai' ? 'bg-yellow-500 text-yellow-900 border-yellow' :
                 tanah.status === 'Ditolak' ? 'bg-red-100 text-red-700 border-red-200' :
-                tanah.status === 'Proses' ? 'bg-blue-100 text-blue-700 border-blue-200' :
-                'bg-slate-100 text-slate-500 border-slate-200'}
+                  tanah.status === 'Proses' ? 'bg-blue-100 text-blue-700 border-blue-200' :
+                    'bg-slate-100 text-slate-500 border-slate-200'}
             `}
           >
             {/* Optionally add status icons here if needed */}
             {tanah.status || 'Proses'}
           </Badge>
           <Link to={createPageUrl('Laporan') + `?id=${tanah.id}`}>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-blue-600 hover:bg-blue-700 border-2 border-white" variant="outline">
               <Printer className="w-4 h-4 mr-2" />
               Cetak Surat
             </Button>
           </Link>
-          <Link to={createPageUrl('FormTanah') + `?id=${tanah.id}`}> 
-            <Button className="bg-orange-500 hover:bg-orange-600" variant="outline">
+          <Link to={createPageUrl('FormTanah') + `?id=${tanah.id}`}>
+            <Button className="bg-orange-500 hover:bg-orange-600 border-2 border-white" variant="outline">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a4 4 0 01-1.414.828l-4 1a1 1 0 01-1.263-1.263l1-4a4 4 0 01.828-1.414z" /></svg>
               Edit
             </Button>
@@ -199,22 +207,24 @@ export default function DetailTanah() {
         <TabsList className="w-full flex flex-col items-center mb-6 bg-transparent p-0 border-none shadow-none">
           <div className="flex w-full max-w-2xl justify-between items-center gap-2">
             {[
-              { label: 'Pemilik', value: 'pemilik', icon: User },
+              { label: 'Pemilik', value: 'pemilik', icon: User, },
               { label: 'Tanah', value: 'tanah', icon: MapPin },
               { label: 'Dokumen', value: 'dokumen', icon: FileText },
             ].map((tab, idx, arr) => (
               <React.Fragment key={tab.value}>
                 <TabsTrigger
                   value={tab.value}
-                  className={`flex flex-col items-center flex-1 focus:outline-none group bg-transparent border-none shadow-none p-0 hover:bg-slate-100 transition-all`}
+                  className={`flex flex-col items-center flex-1 focus:outline-none group bg-transparent border-none shadow-none p-0  transition-all`}
                 >
                   <div
                     className={`rounded-full w-8 h-8 flex items-center justify-center font-bold border-2 transition-all duration-200 mb-1
-                      bg-gradient-to-b from-slate-900 via-slate-800 to-blue-900 text-white border-blue-900 scale-110 shadow-lg`}
+                    bg-gradient-to-b from-slate-900 via-slate-800 to-blue-900 text-white border-white scale-110 shadow-lg`}
                   >
                     {idx + 1}
                   </div>
-                  <span className={`text-xs font-medium flex items-center gap-1`}>{tab.icon && <tab.icon className="w-4 h-4" />} {tab.label}</span>
+                  <span className={`text-xs font-medium flex items-center gap-1 text-white`}>
+                    {tab.icon && <tab.icon className="w-4 h-4" />} {tab.label}
+                  </span>
                 </TabsTrigger>
                 {idx < arr.length - 1 && (
                   <div className={`flex-1 h-1 mx-1 rounded bg-gradient-to-r from-slate-900 via-slate-800 to-blue-900`}></div>
@@ -284,17 +294,8 @@ export default function DetailTanah() {
                   Lokasi Pada Peta
                 </CardTitle>
               </CardHeader>
-              {tanah.latitude && tanah.longitude && (
-              <CardContent className="p-0">
-                <TanahMap 
-                    tanahList={[tanah]} 
-                    center={[tanah.latitude, tanah.longitude]}
-                    zoom={16}
-                  />
-                </CardContent> 
-                                       
-              )}          
-             </Card>
+              {/* Komponen peta telah dihapus */}
+            </Card>
             {qrValue && (
               <Card className="border-0 shadow-lg">
                 <CardHeader>
@@ -304,7 +305,7 @@ export default function DetailTanah() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center p-6">
-                  <img 
+                  <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrValue)}`}
                     alt="QR Code Koordinat"
                     className="mb-4"
@@ -312,9 +313,9 @@ export default function DetailTanah() {
                   <p className="text-sm text-slate-500">
                     Lat: {tanah.latitude}, Long: {tanah.longitude}
                   </p>
-                  <a 
-                    href={qrValue} 
-                    target="_blank" 
+                  <a
+                    href={qrValue}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline text-sm mt-2"
                   >
@@ -324,7 +325,7 @@ export default function DetailTanah() {
               </Card>
             )}
           </div>
-        </TabsContent>     
+        </TabsContent>
 
         <TabsContent value="dokumen">
           <Card className="border-0 shadow-lg">
@@ -334,31 +335,30 @@ export default function DetailTanah() {
                 Data Dokumen
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 grid grid-cols-2 gap-8 text-bold">
-              <div>
-              <InfoRow label="Nomor SKPT" value={tanah.nomor_skpt}  icon={ListOrderedIcon}/>
-              <InfoRow label="Tanggal SKPT" value={formatDate(tanah.tanggal_skpt)} icon={Calendar} />
-              <InfoRow label="Nomor Penyerahan" value={tanah.nomor_penyerahan} icon={ListOrderedIcon} />
-              <InfoRow label="Tanggal Penyerahan" value={formatDate(tanah.tanggal_penyerahan)} icon={Calendar} />
-              <InfoRowStatus label="Status" value={tanah.status} icon={CheckCircle2} />
+            <CardContent className="p-6 flex flex-wrap gap-4 md:gap-8 text-bold">
+              <div className="flex-1 min-w-[220px]">
+                <InfoRow label="Nomor SKPT" value={tanah.nomor_skpt} icon={ListOrderedIcon} />
+                <InfoRow label="Tanggal SKPT" value={formatDate(tanah.tanggal_skpt)} icon={Calendar} />
+                <InfoRow label="Nomor Penyerahan" value={tanah.nomor_penyerahan} icon={ListOrderedIcon} />
+                <InfoRow label="Tanggal Penyerahan" value={formatDate(tanah.tanggal_penyerahan)} icon={Calendar} />
+                <InfoRowStatus label="Status" value={tanah.status} icon={CheckCircle2} />
               </div>
-              <div>
-              <InfoRow label="Camat" value={tanah.nama_camat} icon={CheckIcon} />
-              <InfoRow label="Lurah" value={tanah.nama_lurah} icon={CheckIcon} />
-              <InfoRow label="Kasi Pemerintahan" value={tanah.nama_kasi_pemerintahan} icon={CheckIcon} />
-              <InfoRow label="Administrasi Kecamatan" value={tanah.nama_administrasi_kecamatan} icon={CheckIcon} />
-           
-            </div>
+              <div className="flex-1 min-w-[220px]">
+                <InfoRow label="Camat" value={tanah.nama_camat} icon={CheckIcon} />
+                <InfoRow label="Lurah" value={tanah.nama_lurah} icon={CheckIcon} />
+                <InfoRow label="Kasi Pemerintahan" value={tanah.nama_kasi_pemerintahan} icon={CheckIcon} />
+                <InfoRow label="Administrasi Kecamatan" value={tanah.nama_administrasi_kecamatan} icon={CheckIcon} />
+              </div>
             </CardContent>
-          <CardFooter className="bg-slate-50 rounded-b-lg gap-6 grid grid-cols-6 align-start"> 
-            <InfoRow2 className="text-xs text-slate-500" label="Dibuat:" value={formatDate(tanah.created_date)} />
-            <InfoRow2 className="text-xs text-slate-500" label="Update:" value={formatDate(tanah.updated_date)} />
-            <InfoRow2 className="text-xs text-slate-500" label="by:" value={tanah.created_by} />
-          </CardFooter>
+            <CardFooter className="bg-slate-50 rounded-b-lg flex flex-row flex-nowrap gap-2 sm:gap-6 items-center overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300">
+              <InfoRow2 className="text-xs text-slate-500 min-w-[200px]" label="Dibuat:" value={formatDate(tanah.created_date, true)} />
+              <InfoRow2 className="text-xs text-slate-500 min-w-[200px]" label="Update:" value={formatDate(tanah.updated_date, true)} />
+              <InfoRow2 className="text-xs text-slate-500 min-w-[200px]" label="by:" value={tanah.created_by} />
+            </CardFooter>
           </Card>
 
         </TabsContent>
-            
+
       </Tabs>
     </div>
   );
