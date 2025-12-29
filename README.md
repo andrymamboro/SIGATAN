@@ -115,9 +115,6 @@ Output akan ada di folder `dist/`
 
 ## 📝 Penggunaan
 
-### Login
-- Username: `admin`
-- Password: `admin123`
 
 ### Menu Utama
 1. **Dashboard** - Overview statistik dan peta
