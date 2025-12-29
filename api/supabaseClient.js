@@ -5,8 +5,8 @@ import { createClient } from '@supabase/supabase-js';
 // const SUPABASE_URL = 'https://your-project.supabase.co';
 // const SUPABASE_ANON_KEY = 'your-anon-key';
 
-const SUPABASE_URL = 'https://wfctxoulksmervtxghwr.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_P-1TRDahxuSxl8DFcne2cA_b6NHo2Ow';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 
 // Environment variables should be set in a .env file or your deployment environment, not directly in JS files.
