@@ -70,7 +70,7 @@ export default function Dashboard() {
         {/* Header */}
          <header className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-4">
-            <img src="/Components/img/logo app.png" alt="Logo" className="h-14 w-auto" /> {/* tambahkan baris ini */}
+            <img src={"/img/logo_app.png"} alt="Logo" className="h-14 w-auto" /> {/* tambahkan baris ini */}
             <div>
               <h1 className="text-3xl font-bold text-blue-900 mb-2">SIGATAN Dashboard</h1>
               <p className="text-gray-600">Sistem Informasi Geospasial Pertanahan.</p>

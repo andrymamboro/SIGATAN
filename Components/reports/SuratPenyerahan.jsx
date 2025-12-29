@@ -140,7 +140,7 @@ export default function SuratPenyerahan({ tanah, wilayah, printRef }) {
         pointerEvents: 'none'
       }}>
         <img 
-          src="/Components/img/logokota.png"
+          src="/img/logokota.png"
           alt="Watermark Page 1"
           style={{ width: '800px', height: 'auto' }}
         />
@@ -149,7 +149,7 @@ export default function SuratPenyerahan({ tanah, wilayah, printRef }) {
       {/* Header with logo */}
       <div style={{ position: 'relative', textAlign: 'center', marginBottom: '12pt' }}>
         <img 
-          src="/Components/img/logokota.png" 
+          src="/img/logokota.png"
           alt="Logo" 
           style={{ 
             position: 'absolute', 
@@ -711,7 +711,7 @@ export default function SuratPenyerahan({ tanah, wilayah, printRef }) {
             <div className="print-image-container" style={{ flex: '0 0 110px', textAlign: 'center', marginLeft: '20pt', marginTop: '-10cm' }}>
               <img 
                 className="print-image"
-                src="/Components/img/mata_angin.png"
+                src="/img/mata_angin.png"
                 alt="Mata Angin"
                 style={{ width: '100px', height: 'auto', marginBottom: '10px', display: 'block', maxWidth: '100%' }}
               />

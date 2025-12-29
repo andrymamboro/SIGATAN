@@ -88,7 +88,7 @@ export default function BeritaAcaraTandaBatasNew({ tanah, pejabat, printRef }) {
         pointerEvents: 'none'
       }}>
         <img 
-          src="/Components/img/logokota.png"
+          src="/img/logokota.png"
           alt="Watermark"
           style={{ width: '600px', height: 'auto' }}
         />

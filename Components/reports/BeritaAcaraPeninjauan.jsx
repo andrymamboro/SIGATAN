@@ -90,7 +90,7 @@ export default function BeritaAcaraPeninjauan({ tanah, pejabat, printRef }) {
         pointerEvents: 'none'
       }}>
         <img 
-          src="/Components/img/logokota.png"
+          src="/img/logokota.png"
           alt="Watermark"
           style={{ width: '800px', height: 'auto' }}
         />

@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+
 // Custom SVG icon for Tanah (Field)
 const TanahIcon = (props) => (
   <svg width="22" height="22" viewBox="0 0 32 32" fill="none" {...props}>
@@ -78,8 +79,8 @@ export default function Sidebar({ collapsed, setCollapsed, user, onLogout }) {
             {!collapsed && (
               <div className="flex items-center gap-3">
                 <img 
-                  src="/Components/img/logo app.png" 
-                  alt="Logo" 
+                  src={"/img/logo_app.png"}
+                  alt="Logo"  
                   className="w-10 h-10 object-contain"
                 />
                 <div>

@@ -103,7 +103,7 @@ export default function SuratSKPT({ tanah, wilayah, printRef }) {
         pointerEvents: 'none'
       }}>
         <img 
-          src="/Components/img/logokota.png"
+          src="/img/logokota.png"
           alt="Watermark"
           style={{ width: '600px', height: 'auto' }}
         />
@@ -121,7 +121,7 @@ export default function SuratSKPT({ tanah, wilayah, printRef }) {
           <img 
             width="90" 
             height="88"
-            src="/Components/img/logokota.png"
+            src="/img/logokota.png"
             alt="Logo Kota Palu"
           />
         </span>

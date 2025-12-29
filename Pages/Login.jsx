@@ -113,7 +113,7 @@ export default function Login() {
         {/* Left: Logo and Title */}
         <div className="flex flex-col items-center justify-center md:w-1/2 w-full mb-8 md:mb-0 md:pr-8 text-white text-center">
           <img 
-            src="/Components/img/logo app.png" 
+            src="/img/logo_app.png"
             alt="Logo SIGATAN" 
             className="w-56 h-56 object-contain drop-shadow-[0_8px_32px_rgba(0,0,0,0.6)] mx-auto"
           />
