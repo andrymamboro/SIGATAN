@@ -1,2 +1,0 @@
-import{j as t}from"./vendor-CDA6I53B.js";import{M as i}from"./MapPicker-C4Nnw46l.js";import"./leaflet-D651TNsF.js";import"./utils-DzPFn8M0.js";import"./card-DKMhJA2Q.js";import"./index-yx-jgwg1.js";import"./pdf-BL6BoWiN.js";import"./input-CWJLU9W1.js";import"./label-wcoL3QN2.js";import"./tabs-bRrHKpzy.js";function l(){return t.jsx("div",{style:{height:600},children:t.jsx(i,{tanahList:[{id:1,latitude:-.79,longitude:119.87,status:"Proses",nama_pemilik:"Test"}]})})}export{l as default};
-//# sourceMappingURL=Test-Db6GPa0p.js.map
