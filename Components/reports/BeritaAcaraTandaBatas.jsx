@@ -22,48 +22,50 @@ export default function BeritaAcaraTandaBatasNew({ tanah, pejabat, printRef }) {
       border: '1px solid #ccc',
       boxShadow: '0 0 10px rgba(0,0,0,0.1)'
     }}>
-                  <QRCodeSVG
-                    value={`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`}
-                    size={60}
-                    style={{ border: '1px solid #ccc', display: 'block', background: '#fff' }}
-                    includeMargin={false}
-                  />
-              size: 21cm 841.95pt; 
-              margin: 36pt; 
-            }
-            body * {
-              visibility: hidden !important;
-            }
-            body { 
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-              margin: 0;
-              padding: 0;
-            }
-            .print-container,
-            .print-container * {
-              visibility: visible !important;
-            }
-            .no-print,
-            .no-print * { 
-              display: none !important;
-              visibility: hidden !important;
-            }
-            .print-only {
-              display: block !important;
-            }
-            .print-container {
-              position: absolute;
-              left: 0;
-              top: 0;
-              border: none !important;
-              box-shadow: none !important;
-              margin: 0 !important;
-              max-width: 100% !important;
-            }
+      <style>{`
+        @media print {
+          @page { 
+            size: 21cm 841.95pt; 
+            margin: 36pt; 
           }
-        `}
-      </style>
+          body * {
+            visibility: hidden !important;
+          }
+          body { 
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            margin: 0;
+            padding: 0;
+          }
+          .print-container,
+          .print-container * {
+            visibility: visible !important;
+          }
+          .no-print,
+          .no-print * { 
+            display: none !important;
+            visibility: hidden !important;
+          }
+          .print-only {
+            display: block !important;
+          }
+          .print-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            border: none !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
+      <QRCodeSVG
+        value={`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`}
+        size={60}
+        style={{ border: '1px solid #ccc', display: 'block', background: '#fff' }}
+        includeMargin={false}
+      />
 
       {/* Print Date */}
       <div className="print-only" style={{

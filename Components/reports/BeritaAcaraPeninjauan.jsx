@@ -1,29 +1,11 @@
-import React, { useState } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
+import React from 'react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
 export default function BeritaAcaraPeninjauan({ tanah, pejabat, printRef }) {
   const today = format(new Date(), 'dd MMMM yyyy', { locale: id });
-  const [qrError, setQrError] = useState(false);
-
-  let qrCodeElement = null;
-  if (tanah?.latitude && tanah?.longitude) {
-    qrCodeElement = (
-      <div style={{ position: 'absolute', right: '0', top: '-20px', textAlign: 'center', width: '100px', background: '#fff', zIndex: 10 }}>
-        <p style={{ margin: '0 0 4px 0', fontSize: '8pt', fontWeight: 'bold' }}>QR Code Maps</p>
-        <img
-          src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`)}`}
-          alt="QR Code Koordinat"
-          style={{ width: '90px', height: '90px', border: '1px solid #000', display: 'block', margin: '0 auto', background: '#fff' }}
-        />
-        <p style={{ margin: '4px 0 0 0', fontSize: '7pt', lineHeight: '1.2' }}>
-          Lat: {tanah.latitude}<br/>
-          Long: {tanah.longitude}
-        </p>
-      </div>
-    );
-  }
+  
+ 
 
   return (
     <div 
@@ -235,7 +217,20 @@ export default function BeritaAcaraPeninjauan({ tanah, pejabat, printRef }) {
         </table>
         
         {/* QR Code */}
-        {qrCodeElement}
+        {tanah?.latitude && tanah?.longitude && (
+          <div style={{ position: 'absolute', right: '0', top: '-20px', textAlign: 'center', width: '100px' }}>
+            <p style={{ margin: '0 0 4px 0', fontSize: '8pt', fontWeight: 'bold' }}>QR Code Maps</p>
+            <img 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`)}`}
+              alt="QR Code Koordinat"
+              style={{ width: '90px', height: '90px', border: '1px solid #000', display: 'block', margin: '0 auto' }}
+            />
+            <p style={{ margin: '4px 0 0 0', fontSize: '7pt', lineHeight: '1.2' }}>
+              Lat: {tanah.latitude}<br/>
+              Long: {tanah.longitude}
+            </p>
+          </div>
+        )}
       </div>
 
       <p style={{ margin: 0, marginBottom: '16pt', marginTop: '12pt' }}>

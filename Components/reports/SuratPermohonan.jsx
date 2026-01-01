@@ -1,5 +1,4 @@
 import React from 'react';
-import { QRCodeSVG } from 'qrcode.react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -40,12 +39,11 @@ export default function SuratPermohonan({ tanah, pejabat, printRef }) {
             body { 
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
-            <QRCodeSVG
-              value={`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`}
-              size={90}
-              style={{ border: '1px solid #000', display: 'block', margin: '0 auto', background: '#fff' }}
-              includeMargin={false}
-            />
+              font-family: 'Times New Roman', serif;
+              margin: 0;
+              padding: 0;
+            }
+            .print-container,
             .print-container * {
               visibility: visible !important;
             }
