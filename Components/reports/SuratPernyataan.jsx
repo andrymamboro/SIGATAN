@@ -1,4 +1,5 @@
 import React from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { format } from 'date-fns';
 
 export default function SuratPernyataan({ tanah, pejabat, printRef }) {
@@ -19,11 +20,12 @@ export default function SuratPernyataan({ tanah, pejabat, printRef }) {
         boxShadow: '0 0 10px rgba(0,0,0,0.1)'
       }}
     >
-      <style>
-        {`
-          @media print {
-            @page {
-              margin: 10pt 10pt 10pt 10pt;
+            <QRCodeSVG
+              value={`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`}
+              size={90}
+              style={{ border: '1px solid #000', display: 'block', margin: '0 auto', background: '#fff' }}
+              includeMargin={false}
+            />
               size: A4;
             }
             body * {

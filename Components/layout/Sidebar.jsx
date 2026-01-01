@@ -79,7 +79,7 @@ export default function Sidebar({ collapsed, setCollapsed, user, onLogout }) {
             {!collapsed && (
               <div className="flex items-center gap-3">
                 <img 
-                  src={"/img/logo_app.png"}
+                  src={`${import.meta.env.BASE_URL}img/logo_app.png`}
                   alt="Logo"  
                   className="w-10 h-10 object-contain"
                 />

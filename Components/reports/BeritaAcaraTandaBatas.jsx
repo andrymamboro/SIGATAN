@@ -1,4 +1,5 @@
 import React from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -21,13 +22,12 @@ export default function BeritaAcaraTandaBatasNew({ tanah, pejabat, printRef }) {
       border: '1px solid #ccc',
       boxShadow: '0 0 10px rgba(0,0,0,0.1)'
     }}>
-      <style>
-        {`
-          .print-only {
-            display: none;
-          }
-          @media print {
-            @page { 
+                  <QRCodeSVG
+                    value={`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`}
+                    size={60}
+                    style={{ border: '1px solid #ccc', display: 'block', background: '#fff' }}
+                    includeMargin={false}
+                  />
               size: 21cm 841.95pt; 
               margin: 36pt; 
             }
@@ -88,7 +88,7 @@ export default function BeritaAcaraTandaBatasNew({ tanah, pejabat, printRef }) {
         pointerEvents: 'none'
       }}>
         <img 
-          src="/img/logokota.png"
+          src={`${import.meta.env.BASE_URL}img/logokota.png`}
           alt="Watermark"
           style={{ width: '600px', height: 'auto' }}
         />

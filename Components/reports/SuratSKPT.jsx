@@ -1,4 +1,5 @@
 import React from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -103,7 +104,7 @@ export default function SuratSKPT({ tanah, wilayah, printRef }) {
         pointerEvents: 'none'
       }}>
         <img 
-          src="/img/logokota.png"
+          src={`${import.meta.env.BASE_URL}img/logokota.png`}
           alt="Watermark"
           style={{ width: '600px', height: 'auto' }}
         />
@@ -121,7 +122,7 @@ export default function SuratSKPT({ tanah, wilayah, printRef }) {
           <img 
             width="90" 
             height="88"
-            src="/img/logokota.png"
+            src={`${import.meta.env.BASE_URL}img/logokota.png`}
             alt="Logo Kota Palu"
           />
         </span>
@@ -242,12 +243,11 @@ export default function SuratSKPT({ tanah, wilayah, printRef }) {
             top: '0',
             textAlign: 'center'
           }}>
-            <img 
-              width="70" 
-              height="70"
-              // ...existing code...
-              alt="QR Code Koordinat"
-              style={{border: '1px solid #ccc'}}
+            <QRCodeSVG
+              value={`https://www.google.com/maps?q=${tanah.latitude},${tanah.longitude}`}
+              size={70}
+              style={{ border: '1px solid #ccc', background: '#fff' }}
+              includeMargin={false}
             />
             <p style={{margin: 0, fontSize: '7pt', marginTop: '4pt', lineHeight: '1.2'}}>
               Lat: {tanah?.latitude}<br/>
